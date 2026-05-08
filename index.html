@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM-Wiki Labs · Joonan Lab</title>
+<meta name="description" content="AI 동료과학자와 함께 연구하는 방법 — 1인 연구자가 AI 위키를 운영하는 시스템 인터랙티브 모음.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(0.95 0.02 85);
+  --surface: oklch(0.985 0.012 88);
+  --surface-alt: oklch(0.97 0.018 85);
+  --ink: oklch(0.18 0.03 245);
+  --ink-soft: oklch(0.36 0.025 245);
+  --ink-muted: oklch(0.55 0.02 245);
+  --ink-line: oklch(0.85 0.02 80);
+  --p1: oklch(0.62 0.14 48);
+  --p2: oklch(0.56 0.13 148);
+  --p3: oklch(0.66 0.16 85);
+  --p4: oklch(0.48 0.14 320);
+  --p5: oklch(0.50 0.09 200);
+  --p2-soft: oklch(0.93 0.04 148);
+  --f-display: "Newsreader", ui-serif, Georgia, serif;
+  --f-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, oklch(0.66 0.16 85 / 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 30%, oklch(0.50 0.09 200 / 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 70% at 0% 100%, oklch(0.48 0.14 320 / 0.06) 0%, transparent 60%);
+  mix-blend-mode: multiply;
+}
+.wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 6rem;
+  position: relative;
+  z-index: 1;
+}
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  margin-bottom: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--ink-muted);
+}
+h1 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 4.5vw, 3.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+  margin-bottom: 1rem;
+  max-width: 18ch;
+}
+h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--p2);
+}
+.lede {
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+  max-width: 38rem;
+  margin-bottom: 3.5rem;
+  line-height: 1.65;
+}
+h2 {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--ink-line);
+}
+.labs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 3.5rem;
+}
+.lab {
+  display: block;
+  padding: 1.85rem 2rem;
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-left: 4px solid var(--p2);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 1px 2px oklch(0.20 0.03 245 / 0.05), 0 1px 3px oklch(0.20 0.03 245 / 0.04);
+  position: relative;
+  overflow: hidden;
+}
+.lab::after {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--p2-soft) 0%, transparent 70%);
+  filter: blur(20px);
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.lab:hover {
+  transform: translateY(-3px);
+  border-left-color: var(--ink);
+  box-shadow: 0 4px 8px oklch(0.20 0.03 245 / 0.06), 0 12px 28px oklch(0.20 0.03 245 / 0.08);
+}
+.lab:hover::after { opacity: 1; }
+.lab-meta {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+.lab-title {
+  font-family: var(--f-display);
+  font-size: 1.65rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.65rem;
+  line-height: 1.2;
+  position: relative;
+}
+.lab-title em {
+  font-style: italic;
+  color: var(--p2);
+  font-weight: 400;
+}
+.lab-desc {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+  position: relative;
+}
+.lab-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  position: relative;
+}
+.lab-tag {
+  padding: 0.2rem 0.6rem;
+  background: var(--p2-soft);
+  color: oklch(0.40 0.13 148);
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.about {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  max-width: 38rem;
+}
+.about strong { color: var(--ink); font-weight: 600; }
+.about a { color: var(--p2); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+footer {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  padding-top: 2rem;
+  border-top: 1px solid var(--ink-line);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+footer a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  transition: color 0.2s;
+}
+footer a:hover { color: var(--p2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">JOONAN LAB · INTERACTIVE EXPERIMENTS</div>
+  <h1>LLM-Wiki <em>Labs</em></h1>
+  <p class="lede">
+    AI 동료과학자와 함께 연구하는 방법을 인터랙티브로 정리한 모음. 1인 연구자가 어떻게 AI 위키를 운영하고, 학생·협력자와 어떻게 협업하는지 — 그 시스템을 직접 보고 만지면서 익힐 수 있게 만들었습니다.
+  </p>
+
+  <h2>Labs</h2>
+  <div class="labs">
+    <a class="lab" href="evolution/">
+      <div class="lab-meta">2026-05-08 · 31 days · 9 sections · 4 audience lenses</div>
+      <div class="lab-title">Evolution — <em>한 달간 자란 LLM-Wiki</em></div>
+      <div class="lab-desc">
+        랩의 위키가 PDF 더미에서 분석 작업물로 변한 31일을 단계별로 분해. 처음 한 시간 가이드(ingest, 마크다운, allow), 5단계 진화, 외부 시스템 5개(Notion·Slack·Gmail·Grants·Agents), 실제 워크플로우 5개(PI 학생 피드백 / 미팅 자료 / manuscript 검토 / 협업 / 일일 보고). 학부생 / 대학원생 / 연구원 / PI 4역할 렌즈로 같은 페이지를 다르게 읽기.
+      </div>
+      <div class="lab-tags">
+        <span class="lab-tag">case study</span>
+        <span class="lab-tag">onboarding</span>
+        <span class="lab-tag">workflows</span>
+        <span class="lab-tag">role-aware</span>
+      </div>
+    </a>
+  </div>
+
+  <h2>About</h2>
+  <p class="about">
+    이 페이지들은 <strong>OKLCH 색공간</strong>·Newsreader·IBM Plex Sans·JetBrains Mono로 디자인되었습니다. 외부 의존성은 Google Fonts만 — 단일 HTML 파일로, 어떤 정적 호스팅에서도 그대로 작동합니다.
+    <br><br>
+    <strong>로컬에서 돌리고 싶다면</strong> 저장소를 클론한 뒤 <code style="font-family:var(--f-mono);font-size:0.85rem;background:oklch(0.95 0.025 88);padding:0.05rem 0.4rem;border-radius:3px;">python3 -m http.server 8000</code>으로 가볍게 띄울 수 있습니다.
+  </p>
+
+  <footer>
+    <span>Joonan Lab · Korea University · 2026</span>
+    <span><a href="https://github.com/joonan30/llm-wiki-labs">GitHub →</a></span>
+  </footer>
+</div>
+</body>
+</html>

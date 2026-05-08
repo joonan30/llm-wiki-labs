@@ -1,0 +1,4355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compounding Wiki — 31일의 누적</title>
+<meta name="description" content="AI한테 논문 정리 시키는 법. 카톡으로 설명할 때 쓰는 3단계 그대로 옮긴 시작 가이드 + 그 폴더가 31일간 어떻게 자랐는지의 케이스 스터디.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================
+   DESIGN TOKENS — OKLCH PALETTE
+   inspired by sediment, vellum, verdigris
+   ============================ */
+:root {
+  /* Surfaces */
+  --bg: oklch(0.95 0.02 85);
+  --bg-deep: oklch(0.91 0.025 80);
+  --surface: oklch(0.985 0.012 88);
+  --surface-alt: oklch(0.97 0.018 85);
+  --surface-glass: oklch(0.99 0.008 90 / 0.62);
+
+  /* Ink */
+  --ink: oklch(0.18 0.03 245);
+  --ink-soft: oklch(0.36 0.025 245);
+  --ink-muted: oklch(0.55 0.02 245);
+  --ink-line: oklch(0.85 0.02 80);
+
+  /* Phase palette — perceptually even, avoiding purple/pink/blue cliché */
+  --p1: oklch(0.62 0.14 48);     /* terracotta — 덤프 */
+  --p2: oklch(0.56 0.13 148);    /* moss — 분류 */
+  --p3: oklch(0.66 0.16 85);     /* saffron — 규칙 */
+  --p4: oklch(0.48 0.14 320);    /* mulberry — 운영 */
+  --p5: oklch(0.50 0.09 200);    /* verdigris — 분석 */
+
+  --p1-soft: oklch(0.93 0.05 50);
+  --p2-soft: oklch(0.93 0.04 148);
+  --p3-soft: oklch(0.94 0.06 85);
+  --p4-soft: oklch(0.92 0.04 320);
+  --p5-soft: oklch(0.93 0.03 200);
+
+  /* Role accents — used for the audience switcher */
+  --role-undergrad: oklch(0.62 0.14 48);
+  --role-grad: oklch(0.56 0.13 148);
+  --role-staff: oklch(0.48 0.14 320);
+  --role-pi: oklch(0.50 0.09 200);
+
+  /* Geometry */
+  --r-lg: 18px;
+  --r-md: 12px;
+  --r-sm: 6px;
+  --r-pill: 999px;
+
+  /* Elevation 1–5 */
+  --e1: 0 1px 2px oklch(0.20 0.03 245 / 0.05), 0 1px 3px oklch(0.20 0.03 245 / 0.04);
+  --e2: 0 2px 4px oklch(0.20 0.03 245 / 0.05), 0 4px 12px oklch(0.20 0.03 245 / 0.06);
+  --e3: 0 4px 8px oklch(0.20 0.03 245 / 0.06), 0 12px 28px oklch(0.20 0.03 245 / 0.08);
+  --e4: 0 6px 14px oklch(0.20 0.03 245 / 0.08), 0 24px 48px oklch(0.20 0.03 245 / 0.10);
+  --e5: 0 12px 24px oklch(0.20 0.03 245 / 0.12), 0 40px 80px oklch(0.20 0.03 245 / 0.14);
+
+  /* Type */
+  --f-display: "Newsreader", ui-serif, Georgia, serif;
+  --f-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-feature-settings: "ss01", "cv11";
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Subtle paper grain backdrop */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, oklch(0.66 0.16 85 / 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 30%, oklch(0.50 0.09 200 / 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 70% at 0% 100%, oklch(0.48 0.14 320 / 0.06) 0%, transparent 60%);
+  mix-blend-mode: multiply;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.18 0 0 0 0 0.18 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+
+/* ============================
+   LAYOUT
+   ============================ */
+.shell { position: relative; z-index: 2; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem; }
+
+@media (min-width: 1280px) {
+  .wrap { padding: 0 2rem; }
+}
+
+/* ============================
+   STICKY ROLE SWITCHER
+   ============================ */
+.role-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 0.75rem 0;
+  background: oklch(0.95 0.02 85 / 0.78);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid oklch(0.85 0.02 80 / 0.5);
+}
+.role-inner {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.role-label {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin-right: 0.25rem;
+}
+.role-pills {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.role-pill {
+  padding: 0.45rem 0.95rem;
+  border: 1px solid oklch(0.85 0.02 80);
+  background: var(--surface);
+  border-radius: var(--r-pill);
+  font-family: var(--f-body);
+  font-weight: 500;
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+.role-pill:hover {
+  color: var(--ink);
+  border-color: var(--accent, var(--ink-soft));
+  transform: translateY(-1px);
+}
+.role-pill[aria-pressed="true"] {
+  background: var(--accent);
+  color: oklch(0.99 0.005 90);
+  border-color: transparent;
+  box-shadow: var(--e2);
+}
+.role-pill .glyph {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 0.4rem;
+  vertical-align: middle;
+  transition: all 0.25s;
+}
+.role-pill[aria-pressed="true"] .glyph {
+  background: oklch(0.99 0.005 90);
+}
+
+/* ============================
+   HERO
+   ============================ */
+.hero {
+  padding: 5rem 0 3rem;
+  position: relative;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  margin-bottom: 1.25rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--ink-muted);
+}
+.h-display {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(1.85rem, 4.2vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  max-width: 26ch;
+}
+.h-display em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--p2);
+}
+.lede {
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  color: var(--ink-soft);
+  max-width: 38rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+/* Hero stats — wave style, not card style */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--ink-line);
+  border-bottom: 1px solid var(--ink-line);
+  padding: 1.5rem 0;
+  margin-top: 3rem;
+}
+.h-stat {
+  padding: 0.25rem 1.5rem 0.25rem 0;
+  border-right: 1px solid var(--ink-line);
+}
+.h-stat:last-child { border-right: 0; }
+.h-stat-num {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+.h-stat-num small {
+  font-family: var(--f-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  letter-spacing: 0;
+  margin-left: 0.25rem;
+}
+.h-stat-lab {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin-top: 0.4rem;
+}
+
+/* ============================
+   SECTION WRAPPER
+   ============================ */
+section {
+  padding: 5rem 0 4rem;
+  position: relative;
+}
+.sec-head {
+  margin-bottom: 2.5rem;
+  max-width: 44rem;
+}
+.sec-eyebrow {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+.sec-eyebrow .num {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  color: var(--accent, var(--p2));
+}
+.sec-title {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.85rem;
+  color: var(--ink);
+}
+.sec-title em { font-style: italic; font-weight: 400; color: var(--accent, var(--p2)); }
+.sec-sub {
+  font-size: 1rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  max-width: 38rem;
+}
+
+/* ============================
+   QUICK START (랜딩 3-step)
+   ============================ */
+.quickstart {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2rem 0 1.5rem;
+}
+@media (max-width: 900px) { .quickstart { grid-template-columns: 1fr; } }
+
+.qs-card {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 1.5rem 1.5rem 1.4rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--e1);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+.qs-card:hover { transform: translateY(-3px); box-shadow: var(--e3); }
+.qs-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--c);
+}
+.qs-num {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-family: var(--f-display);
+  font-size: 2.1rem;
+  font-weight: 500;
+  color: var(--c);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-style: italic;
+  margin-bottom: 0.25rem;
+}
+.qs-num small {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  font-style: normal;
+  color: var(--ink-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.qs-title {
+  font-family: var(--f-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 0.85rem;
+  line-height: 1.25;
+}
+.qs-body {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.qs-body p { margin-bottom: 0.45rem; }
+.qs-body p:last-child { margin-bottom: 0; }
+.qs-body strong { color: var(--c); font-weight: 600; }
+.qs-body code {
+  font-family: var(--f-mono);
+  background: oklch(0.95 0.025 88);
+  color: var(--ink);
+  padding: 0.1rem 0.45rem;
+  font-size: 0.82rem;
+  border-radius: 4px;
+  border: 1px solid oklch(0.88 0.02 80);
+}
+.qs-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  background: var(--c-soft);
+  color: oklch(from var(--c) calc(l - 0.18) c h);
+  border-radius: var(--r-sm);
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+.qs-bullet {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding: 0.2rem 0;
+  font-size: 0.88rem;
+}
+.qs-bullet::before {
+  content: "·";
+  color: var(--c);
+  font-weight: 700;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.gist-box {
+  margin-top: 0.75rem;
+  padding: 1rem 1.1rem;
+  background: oklch(0.16 0.02 245);
+  border-radius: var(--r-md);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+.gist-label {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: oklch(0.78 0.14 145);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.gist-url {
+  font-family: var(--f-mono);
+  font-size: 0.85rem;
+  color: oklch(0.92 0.012 90);
+  word-break: break-all;
+  flex: 1;
+  min-width: 0;
+}
+.gist-copy {
+  background: oklch(0.78 0.14 145);
+  color: oklch(0.16 0.02 245);
+  border: 0;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--r-sm);
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.gist-copy:hover { background: oklch(0.85 0.16 145); }
+.gist-copy.copied { background: oklch(0.66 0.16 85); color: oklch(0.16 0.02 245); }
+
+.qs-prompt {
+  margin-top: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: oklch(0.97 0.02 85);
+  border-left: 3px solid var(--c);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-family: var(--f-mono);
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+.qs-prompt::before {
+  content: '"';
+  font-family: var(--f-display);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--c);
+  margin-right: 0.2rem;
+  vertical-align: -0.15em;
+}
+.qs-prompt::after {
+  content: '"';
+  font-family: var(--f-display);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--c);
+  margin-left: 0.2rem;
+  vertical-align: -0.15em;
+}
+
+.story-bridge {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px dashed var(--ink-line);
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.05em;
+}
+.story-bridge strong {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-top: 0.35rem;
+  text-transform: none;
+}
+
+/* ============================
+   HERO SCROLL CUE
+   ============================ */
+.scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 2.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  text-decoration: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+.scroll-cue:hover { color: var(--p2); }
+.scroll-cue .arrow {
+  display: inline-block;
+  width: 1px;
+  height: 28px;
+  background: currentColor;
+  position: relative;
+  animation: scroll-bob 2.4s ease-in-out infinite;
+}
+.scroll-cue .arrow::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: translateX(-50%) rotate(45deg);
+}
+@keyframes scroll-bob {
+  0%, 100% { opacity: 0.6; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(4px); }
+}
+
+/* ============================
+   CONCEPT PRIMER (§00)
+   ============================ */
+.primer-section {
+  background: linear-gradient(180deg, transparent 0%, oklch(0.97 0.02 88) 30%, oklch(0.97 0.02 88) 70%, transparent 100%);
+}
+
+.primer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 4rem;
+}
+@media (max-width: 900px) { .primer-grid { grid-template-columns: 1fr; } }
+
+.primer-card {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 1.65rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s var(--ease-out);
+  box-shadow: var(--e1);
+}
+.primer-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: var(--c);
+}
+.primer-card::after {
+  content: "";
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--c-soft) 0%, transparent 70%);
+  filter: blur(20px);
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.primer-card:hover { transform: translateY(-4px); box-shadow: var(--e3); }
+.primer-card:hover::after { opacity: 1; }
+
+.primer-num {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--c);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.primer-name {
+  font-family: var(--f-display);
+  font-size: 1.85rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+.primer-tag {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  background: var(--c-soft);
+  color: oklch(from var(--c) calc(l - 0.15) c h);
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: var(--r-pill);
+  margin-bottom: 1rem;
+  letter-spacing: 0.04em;
+}
+.primer-body {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.primer-body strong { color: var(--c); font-weight: 600; }
+.primer-body code {
+  font-family: var(--f-mono);
+  background: var(--c-soft);
+  color: oklch(from var(--c) calc(l - 0.15) c h);
+  padding: 0.05rem 0.35rem;
+  font-size: 0.82rem;
+  border-radius: 3px;
+}
+.primer-stat {
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  padding-top: 0.85rem;
+  border-top: 1px solid oklch(0.88 0.018 80);
+}
+
+/* ============================
+   KNOWLEDGE CHAIN
+   ============================ */
+.chain {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 2.5rem 2rem;
+  box-shadow: var(--e2);
+  margin-bottom: 4rem;
+}
+.chain-head { margin-bottom: 2rem; max-width: 44rem; }
+.chain-title {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.4rem;
+  color: var(--ink);
+}
+.chain-title em { font-style: italic; color: var(--p2); font-weight: 400; }
+.chain-sub { font-size: 0.92rem; color: var(--ink-soft); }
+
+.chain-svg-wrap { position: relative; overflow-x: auto; }
+.chain-svg { width: 100%; min-width: 760px; height: 220px; display: block; }
+
+.chain-detail {
+  margin-top: 1.75rem;
+  padding: 1.5rem 1.65rem;
+  background: var(--surface-alt);
+  border-radius: var(--r-md);
+  border-left: 4px solid var(--c, var(--p2));
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+  min-height: 130px;
+  transition: border-color 0.3s;
+}
+@media (max-width: 700px) { .chain-detail { grid-template-columns: 1fr; gap: 1rem; } }
+
+.cd-stage {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--c, var(--p2));
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.cd-name {
+  font-family: var(--f-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 0.4rem;
+}
+.cd-folder {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  background: var(--surface);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid oklch(0.88 0.018 80);
+  display: inline-block;
+}
+.cd-body { font-size: 0.92rem; line-height: 1.65; color: var(--ink); }
+.cd-body strong { color: var(--c, var(--p2)); font-weight: 600; }
+.cd-uses {
+  margin-top: 0.85rem;
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+}
+.cd-uses strong { color: var(--c, var(--p2)); font-weight: 600; }
+
+/* ============================
+   READING GUIDE
+   ============================ */
+.reading-guide {
+  background: linear-gradient(135deg, var(--surface) 0%, oklch(0.94 0.025 85) 100%);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.reading-guide::before {
+  content: "";
+  position: absolute;
+  bottom: -100px; left: -100px;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, var(--p3-soft) 0%, transparent 60%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+.rg-title {
+  font-family: var(--f-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+  position: relative;
+}
+.rg-sub { font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 1.5rem; position: relative; }
+.rg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  position: relative;
+}
+.rg-item {
+  padding: 0.95rem 1.1rem;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  border: 1px solid oklch(0.92 0.018 80);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: all 0.25s var(--ease-out);
+  position: relative;
+}
+.rg-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--ink);
+  box-shadow: var(--e2);
+}
+.rg-num {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.rg-name {
+  font-family: var(--f-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+  line-height: 1.2;
+}
+.rg-desc { font-size: 0.78rem; color: var(--ink-soft); line-height: 1.4; }
+.rg-roles {
+  display: flex;
+  gap: 4px;
+  margin-top: 0.55rem;
+}
+.rg-roles span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* ============================
+   COMPOUNDING STREAM CHART
+   ============================ */
+.flow-section {
+  background: linear-gradient(180deg, transparent 0%, var(--surface-alt) 50%, transparent 100%);
+}
+.flow-card {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 2rem 2rem 1.5rem;
+  box-shadow: var(--e3);
+  position: relative;
+  overflow: hidden;
+}
+.flow-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, oklch(0.99 0.008 90 / 0.5) 0%, transparent 60%);
+  pointer-events: none;
+}
+.flow-svg-wrap {
+  position: relative;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.flow-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: crosshair;
+}
+.flow-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ink-line);
+}
+.flow-leg {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.flow-leg .swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--c);
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px oklch(0.20 0.03 245 / 0.1);
+}
+.flow-leg.dimmed { opacity: 0.3; }
+.flow-leg strong { color: var(--ink); font-weight: 600; }
+.flow-tip {
+  position: absolute;
+  pointer-events: none;
+  background: oklch(0.18 0.03 245 / 0.96);
+  color: oklch(0.97 0.012 90);
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--r-sm);
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  opacity: 0;
+  transition: opacity 0.15s;
+  box-shadow: var(--e3);
+  z-index: 10;
+  min-width: 200px;
+  backdrop-filter: blur(8px);
+}
+.flow-tip.visible { opacity: 1; }
+.flow-tip .tip-date {
+  font-family: var(--f-display);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: oklch(0.97 0.012 90);
+  margin-bottom: 0.3rem;
+  border-bottom: 1px solid oklch(0.97 0.012 90 / 0.2);
+  padding-bottom: 0.3rem;
+}
+.flow-tip .tip-row { display: flex; justify-content: space-between; gap: 1rem; }
+.flow-tip .tip-row .lab { color: oklch(0.75 0.012 90); }
+.flow-tip .tip-event {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid oklch(0.97 0.012 90 / 0.2);
+  font-family: var(--f-body);
+  font-size: 0.78rem;
+  color: oklch(0.92 0.012 90);
+}
+
+.flow-axis-x {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  padding: 0 1rem 0 50px;
+}
+
+/* ============================
+   DAILY LEDGER — 31일 원장
+   ============================ */
+.ledger {
+  margin-top: 2.5rem;
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 1.75rem;
+  box-shadow: var(--e2);
+}
+.ledger-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.ledger-title {
+  font-family: var(--f-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.ledger-hint {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+}
+.ledger-scale {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+  margin-left: auto;
+}
+.ledger-scale .sc {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.ledger-scale .sw {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--ink-line);
+  box-shadow: inset 0 0 0 1px oklch(0.20 0.03 245 / 0.08);
+}
+
+.ledger-strip {
+  display: grid;
+  grid-template-columns: repeat(31, 1fr);
+  gap: 3px;
+  height: 92px;
+  align-items: end;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--ink-line);
+  position: relative;
+}
+.day-cell {
+  position: relative;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+}
+.day-bar {
+  width: 100%;
+  background: var(--c);
+  border-radius: 3px 3px 0 0;
+  min-height: 8px;
+  box-shadow: inset 0 0 0 1px oklch(0.20 0.03 245 / 0.06);
+  transition: filter 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+.day-cell:hover .day-bar { filter: brightness(1.1); transform: translateY(-2px); }
+.day-cell.active .day-bar {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.day-cell .star {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: var(--c);
+  font-weight: 700;
+  pointer-events: none;
+}
+.day-cell.idle .day-bar {
+  background: oklch(0.92 0.015 85);
+  border: 1px dashed oklch(0.82 0.02 80);
+  min-height: 6px;
+}
+
+.ledger-axis {
+  display: grid;
+  grid-template-columns: repeat(31, 1fr);
+  gap: 3px;
+  margin-top: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  color: var(--ink-muted);
+}
+.ledger-axis span { text-align: center; }
+.ledger-axis span.boundary {
+  color: var(--ink);
+  font-weight: 600;
+}
+.ledger-week-label {
+  position: absolute;
+  top: -1.2rem;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.05em;
+}
+
+.ledger-detail {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: var(--surface-alt);
+  border-radius: var(--r-md);
+  border-left: 4px solid var(--c, var(--p2));
+  min-height: 130px;
+  align-items: start;
+  transition: border-color 0.3s;
+}
+@media (max-width: 700px) { .ledger-detail { grid-template-columns: 1fr; gap: 1rem; } }
+
+.ld-meta { font-family: var(--f-mono); }
+.ld-date {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.15rem;
+}
+.ld-day {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
+}
+.ld-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+}
+.ld-stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0;
+  border-bottom: 1px dashed oklch(0.88 0.02 80);
+}
+.ld-stat:last-child { border-bottom: 0; }
+.ld-stat .lab { color: var(--ink-muted); }
+.ld-stat .val { color: var(--ink); font-weight: 600; }
+.ld-headline {
+  font-family: var(--f-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--c, var(--ink));
+  margin-bottom: 0.5rem;
+}
+.ld-headline .star { color: var(--c, var(--p3)); margin-right: 0.4rem; }
+.ld-body { font-size: 0.92rem; color: var(--ink); line-height: 1.65; }
+.ld-phase {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  background: var(--c-soft, var(--p2-soft));
+  color: oklch(from var(--c, var(--p2)) calc(l - 0.15) c h);
+  border-radius: var(--r-pill);
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  margin-bottom: 0.65rem;
+  letter-spacing: 0.04em;
+}
+
+.ledger-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+}
+.ledger-nav button {
+  background: transparent;
+  border: 1px solid oklch(0.88 0.018 80);
+  color: var(--ink-soft);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  transition: all 0.15s;
+}
+.ledger-nav button:hover { background: var(--surface); color: var(--ink); border-color: var(--ink); }
+.ledger-nav button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ============================
+   PHASE EXPLORER
+   ============================ */
+.phase-rail {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+@media (max-width: 720px) { .phase-rail { grid-template-columns: repeat(2, 1fr); } }
+
+.phase-tab {
+  padding: 1.1rem 1rem;
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.phase-tab::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: var(--c);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-out);
+}
+.phase-tab:hover { transform: translateY(-2px); box-shadow: var(--e2); }
+.phase-tab[aria-pressed="true"] { box-shadow: var(--e2); border-color: var(--c); }
+.phase-tab[aria-pressed="true"]::after { transform: scaleX(1); }
+
+.pt-num {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c);
+  font-weight: 600;
+}
+.pt-name {
+  font-family: var(--f-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0.3rem 0 0.15rem;
+  color: var(--ink);
+}
+.pt-dates {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+.phase-stage {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 2.25rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 380px;
+  box-shadow: var(--e2);
+}
+.phase-stage::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: var(--c);
+}
+.phase-stage::after {
+  content: "";
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--c-soft) 0%, transparent 70%);
+  opacity: 0.7;
+  pointer-events: none;
+  filter: blur(20px);
+}
+
+.phase-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 2.5rem;
+}
+@media (max-width: 800px) { .phase-content { grid-template-columns: 1fr; } }
+
+.phase-tagline {
+  font-family: var(--f-display);
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 500;
+  color: var(--c);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.015em;
+}
+.phase-summary {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin-bottom: 1.5rem;
+}
+.phase-actions h4 {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin-bottom: 0.85rem;
+  font-weight: 600;
+}
+.phase-actions ul { list-style: none; }
+.phase-actions li {
+  position: relative;
+  padding: 0.55rem 0 0.55rem 1.5rem;
+  font-size: 0.88rem;
+  color: var(--ink);
+  border-bottom: 1px solid oklch(0.92 0.018 80);
+}
+.phase-actions li:last-child { border-bottom: 0; }
+.phase-actions li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--c);
+  font-weight: 500;
+}
+.phase-actions code.tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  background: var(--c-soft);
+  color: oklch(from var(--c) calc(l - 0.1) c h);
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  border-radius: var(--r-sm);
+  margin-right: 0.4rem;
+  font-weight: 500;
+}
+
+.phase-snap {
+  background: oklch(0.16 0.02 245);
+  color: oklch(0.86 0.012 90);
+  border-radius: var(--r-md);
+  padding: 1.25rem;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  position: relative;
+}
+.phase-snap .dim { color: oklch(0.55 0.012 90); }
+.phase-snap .new { color: oklch(0.78 0.14 145); }
+.phase-snap .hi { color: oklch(0.80 0.16 75); }
+
+/* ============================
+   TRELLIS (AGENTS.md growth)
+   ============================ */
+.trellis {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 3rem;
+  align-items: center;
+}
+@media (max-width: 800px) { .trellis { grid-template-columns: 1fr; } }
+
+.trellis-chart {
+  position: relative;
+  padding: 2rem 1.5rem;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  border: 1px solid oklch(0.88 0.018 80);
+  box-shadow: var(--e2);
+  overflow: hidden;
+}
+.trellis-chart::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0, transparent 39px, oklch(0.88 0.018 80 / 0.4) 39px, oklch(0.88 0.018 80 / 0.4) 40px);
+  pointer-events: none;
+}
+.trellis-bars { display: flex; align-items: flex-end; gap: 1.25rem; height: 320px; position: relative; z-index: 1; }
+.tbar-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
+.tbar {
+  width: 100%;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, var(--c) 0%, oklch(from var(--c) calc(l - 0.08) c h) 100%);
+  position: relative;
+  transition: height 1.2s var(--ease-out);
+  box-shadow: 0 -2px 0 oklch(from var(--c) calc(l + 0.15) c h) inset, var(--e1);
+}
+.tbar-val {
+  position: absolute;
+  top: -1.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.tbar-lab {
+  margin-top: 0.6rem;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  text-align: center;
+  line-height: 1.3;
+}
+.tbar-lab strong {
+  display: block;
+  color: var(--ink);
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.trellis-rules {}
+.trellis-rules h4 {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+.t-rule {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-md);
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+  position: relative;
+}
+.t-rule:hover {
+  border-color: var(--p3);
+  background: var(--surface-alt);
+  transform: translateX(3px);
+}
+.t-rule.open {
+  border-color: var(--p3);
+  background: oklch(0.97 0.025 85);
+}
+.t-rule .rname {
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.t-rule .rname::after {
+  content: "+";
+  color: var(--p3);
+  font-family: var(--f-mono);
+  font-size: 1.1rem;
+  transition: transform 0.3s;
+}
+.t-rule.open .rname::after { transform: rotate(45deg); }
+.t-rule .rex {
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  margin-top: 0.5rem;
+  line-height: 1.55;
+  display: none;
+}
+.t-rule.open .rex { display: block; }
+
+/* ============================
+   LOOP ORBITS
+   ============================ */
+.loops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+.loop-card {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--e1);
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+}
+.loop-card:hover { transform: translateY(-4px); box-shadow: var(--e3); }
+
+.loop-orbit {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  margin-bottom: 1rem;
+}
+.loop-orbit svg { width: 100%; height: 100%; }
+.loop-orbit .ring { fill: none; stroke: var(--c-soft); stroke-width: 4; }
+.loop-orbit .arc {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  animation: spin 4s linear infinite;
+}
+.loop-orbit .dot { fill: var(--c); }
+@keyframes spin {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+
+.loop-cad {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.loop-name {
+  font-family: var(--f-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.loop-flow {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  background: var(--surface-alt);
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--r-sm);
+  line-height: 1.65;
+  margin-bottom: 0.85rem;
+}
+.loop-out { font-size: 0.85rem; color: var(--ink-soft); }
+.loop-out strong { color: var(--ink); font-weight: 600; }
+
+/* ============================
+   ANATOMY (backlog item)
+   ============================ */
+.anatomy {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--e2);
+}
+.an-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  border-bottom: 1px solid oklch(0.92 0.018 80);
+  transition: background 0.2s;
+}
+.an-row:last-child { border-bottom: 0; }
+.an-row:hover { background: var(--surface-alt); }
+.an-key {
+  padding: 1.15rem 1.35rem;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--p4);
+  border-right: 1px solid oklch(0.92 0.018 80);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: oklch(0.97 0.018 85);
+}
+.an-val { padding: 1.15rem 1.35rem; font-size: 0.9rem; color: var(--ink); line-height: 1.6; }
+.an-val code {
+  background: var(--p3-soft);
+  color: oklch(0.40 0.12 80);
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-family: var(--f-mono);
+  font-size: 0.82rem;
+}
+.an-val .hint {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+@media (max-width: 600px) {
+  .an-row { grid-template-columns: 1fr; }
+  .an-key { border-right: 0; border-bottom: 1px solid oklch(0.92 0.018 80); }
+}
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.tag-row span {
+  padding: 0.25rem 0.7rem;
+  background: var(--p4-soft);
+  color: oklch(0.30 0.12 320);
+  border-radius: var(--r-pill);
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+/* ============================
+   ROLE CALLOUT (per-section)
+   ============================ */
+.role-callout {
+  margin-top: 1.75rem;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent-soft, oklch(0.96 0.02 80)) 0%, var(--surface) 100%);
+  border-left: 4px solid var(--accent, var(--p2));
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  box-shadow: var(--e1);
+}
+.role-callout-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent, var(--p2));
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.role-callout-head::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--accent, var(--p2));
+  border-radius: 50%;
+}
+.role-callout-body { font-size: 0.92rem; line-height: 1.6; color: var(--ink); }
+.role-callout-body strong { color: var(--accent, var(--p2)); font-weight: 600; }
+
+/* ============================
+   PLAYBOOKS (4 audiences)
+   ============================ */
+.playbook-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+.playbook {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+  box-shadow: var(--e1);
+}
+.playbook:hover { transform: translateY(-3px); box-shadow: var(--e3); }
+.playbook-head {
+  padding: 1.5rem 1.5rem 1rem;
+  background: linear-gradient(135deg, var(--c-soft) 0%, transparent 100%);
+  border-bottom: 1px solid oklch(0.92 0.018 80);
+  position: relative;
+}
+.playbook-head::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--c);
+}
+.pb-role {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.pb-title {
+  font-family: var(--f-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.pb-sub {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-top: 0.4rem;
+  line-height: 1.5;
+}
+.playbook-body { padding: 1.25rem 1.5rem 1.5rem; }
+.pb-step {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px dashed oklch(0.90 0.02 80);
+}
+.pb-step:last-child { border-bottom: 0; }
+.pb-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--c);
+  color: oklch(0.99 0.005 90);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.pb-step-text { font-size: 0.85rem; color: var(--ink); line-height: 1.55; }
+.pb-step-text strong { color: var(--c); font-weight: 600; }
+
+/* ============================
+   ADAPT (final section)
+   ============================ */
+.adapt {
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-deep) 100%);
+  border-radius: var(--r-lg);
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--e3);
+}
+.adapt::before {
+  content: "";
+  position: absolute;
+  top: -100px; left: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--p2-soft) 0%, transparent 60%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+.adapt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.adapt-card {
+  padding: 1.25rem;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  border: 1px solid oklch(0.88 0.018 80);
+  transition: all 0.3s var(--ease-out);
+}
+.adapt-card:hover {
+  border-color: var(--p2);
+  transform: translateY(-2px);
+  box-shadow: var(--e2);
+}
+.adapt-num {
+  font-family: var(--f-display);
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--p2);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+.adapt-title {
+  font-family: var(--f-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.adapt-body {
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.adapt-body code {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  background: var(--p2-soft);
+  color: oklch(from var(--p2) calc(l - 0.15) c h);
+  padding: 0.05rem 0.35rem;
+  border-radius: 3px;
+}
+
+/* ============================
+   FOOTER
+   ============================ */
+footer {
+  margin-top: 4rem;
+  padding: 2.5rem 0 4rem;
+  border-top: 1px solid var(--ink-line);
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  line-height: 1.7;
+}
+footer a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid currentColor; }
+footer a:hover { color: var(--p2); }
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.footer-grid h5 {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+}
+
+/* ============================
+   ROLE-DRIVEN VISIBILITY
+   ============================ */
+body[data-role="undergrad"] { --accent: var(--role-undergrad); --accent-soft: var(--p1-soft); }
+body[data-role="grad"]      { --accent: var(--role-grad);      --accent-soft: var(--p2-soft); }
+body[data-role="staff"]     { --accent: var(--role-staff);     --accent-soft: var(--p4-soft); }
+body[data-role="pi"]        { --accent: var(--role-pi);        --accent-soft: var(--p5-soft); }
+
+[data-show-role] { display: none; }
+body[data-role="undergrad"] [data-show-role="undergrad"],
+body[data-role="grad"]      [data-show-role="grad"],
+body[data-role="staff"]     [data-show-role="staff"],
+body[data-role="pi"]        [data-show-role="pi"] { display: block; }
+
+/* Highlight phase relevant to role */
+body[data-role="undergrad"] .phase-tab[data-phase="1"],
+body[data-role="undergrad"] .phase-tab[data-phase="2"],
+body[data-role="grad"]      .phase-tab[data-phase="4"],
+body[data-role="grad"]      .phase-tab[data-phase="5"],
+body[data-role="staff"]     .phase-tab[data-phase="3"],
+body[data-role="staff"]     .phase-tab[data-phase="4"],
+body[data-role="pi"]        .phase-tab[data-phase="3"],
+body[data-role="pi"]        .phase-tab[data-phase="5"] {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================
+   ECOSYSTEM (§00B) — 위키 옆에 자란 것들
+   ============================ */
+.eco-section { background: var(--surface-alt); }
+.eco-tier { margin-bottom: 1.75rem; }
+.eco-tier-label {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+}
+.eco-tier-label .count {
+  background: oklch(0.92 0.02 80);
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--r-pill);
+  color: var(--ink-soft);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.eco-tier-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--ink-line);
+}
+.eco-grid-core {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+@media (max-width: 700px) { .eco-grid-core { grid-template-columns: 1fr; } }
+
+.eco-grid-ops {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.65rem;
+}
+.eco-grid-ext {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 700px) { .eco-grid-ext { grid-template-columns: 1fr; } }
+
+.eco-card {
+  padding: 1rem 1.15rem;
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-md);
+  transition: all 0.25s var(--ease-out);
+  border-left: 3px solid var(--c, var(--p2));
+}
+.eco-card:hover { transform: translateY(-2px); box-shadow: var(--e2); }
+.eco-folder {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  color: var(--c, var(--p2));
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+.eco-name {
+  font-family: var(--f-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.eco-body {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.eco-body strong { color: var(--c, var(--p2)); font-weight: 600; }
+.eco-body code {
+  font-family: var(--f-mono);
+  background: var(--c-soft, var(--p2-soft));
+  color: oklch(from var(--c, var(--p2)) calc(l - 0.15) c h);
+  padding: 0.05rem 0.35rem;
+  font-size: 0.78rem;
+  border-radius: 3px;
+}
+.eco-stat {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px dashed oklch(0.92 0.018 80);
+}
+.eco-bridge {
+  text-align: center;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.12em;
+  margin: 1.75rem 0 1.5rem;
+}
+.eco-bridge::before, .eco-bridge::after {
+  content: "";
+  display: inline-block;
+  width: 60px;
+  height: 1px;
+  background: var(--ink-line);
+  vertical-align: middle;
+  margin: 0 1rem;
+}
+.eco-card-ext {
+  padding: 1.4rem 1.35rem;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-top: 4px solid var(--c, var(--p4));
+  transition: all 0.3s var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+.eco-card-ext::after {
+  content: "";
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, var(--c-soft, var(--p4-soft)) 0%, transparent 70%);
+  filter: blur(20px);
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.eco-card-ext:hover { transform: translateY(-3px); box-shadow: var(--e3); }
+.eco-card-ext:hover::after { opacity: 1; }
+.eco-ext-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--c-soft, var(--p4-soft));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+  font-family: var(--f-mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--c, var(--p4));
+  position: relative;
+}
+
+/* ============================
+   FIRST HOUR — 처음 쓸 때 알아둘 것
+   ============================ */
+.fh-section {
+  background: linear-gradient(180deg, transparent 0%, oklch(0.96 0.025 88) 50%, transparent 100%);
+}
+.fh-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 800px) { .fh-grid { grid-template-columns: 1fr; } }
+
+.fh-card {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 1.6rem 1.7rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--e1);
+  border-top: 4px solid var(--c, var(--p2));
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+.fh-card:hover { transform: translateY(-2px); box-shadow: var(--e2); }
+.fh-card.span-2 { grid-column: span 2; }
+@media (max-width: 800px) { .fh-card.span-2 { grid-column: span 1; } }
+
+.fh-num {
+  display: inline-block;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--c);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.fh-q {
+  font-family: var(--f-display);
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 0.85rem;
+}
+.fh-q em {
+  font-style: italic;
+  color: var(--c);
+  font-weight: 400;
+}
+.fh-a {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ink);
+  margin-bottom: 0.85rem;
+}
+.fh-a:last-child { margin-bottom: 0; }
+.fh-a strong { color: var(--c); font-weight: 600; }
+.fh-a code {
+  font-family: var(--f-mono);
+  background: oklch(0.95 0.025 88);
+  color: var(--ink);
+  padding: 0.08rem 0.4rem;
+  font-size: 0.84rem;
+  border-radius: 4px;
+  border: 1px solid oklch(0.88 0.02 80);
+}
+.fh-a-emph {
+  font-family: var(--f-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--c);
+  margin: 0.4rem 0 1rem;
+  letter-spacing: -0.005em;
+}
+
+.fh-prompt-inline {
+  display: block;
+  margin: 0.7rem 0 0.85rem;
+  padding: 0.75rem 1rem;
+  background: oklch(0.97 0.02 85);
+  border-left: 3px solid var(--c);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-family: var(--f-display);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.45;
+}
+.fh-prompt-inline::before { content: '"'; color: var(--c); margin-right: 0.15rem; font-size: 1.3rem; vertical-align: -0.18em; }
+.fh-prompt-inline::after { content: '"'; color: var(--c); margin-left: 0.15rem; font-size: 1.3rem; vertical-align: -0.18em; }
+
+.fh-paths {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem 1.25rem;
+  margin-top: 0.85rem;
+}
+@media (max-width: 600px) { .fh-paths { grid-template-columns: 1fr; } }
+.fh-path-os {
+  padding: 0.85rem 1rem;
+  background: var(--surface-alt);
+  border-radius: var(--r-sm);
+  border: 1px solid oklch(0.92 0.018 80);
+}
+.fh-path-os-label {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--c);
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+}
+.fh-path-os ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+.fh-path-os li { padding: 0.15rem 0; }
+.fh-path-os li strong {
+  display: inline-block;
+  min-width: 80px;
+  font-family: var(--f-body);
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+.fh-path-os li code {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--ink-soft);
+}
+
+.fh-md-block {
+  background: oklch(0.16 0.02 245);
+  color: oklch(0.86 0.012 90);
+  border-radius: var(--r-md);
+  padding: 1.2rem 1.35rem;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+.fh-md-block .fm { color: oklch(0.55 0.012 90); }
+.fh-md-block .key { color: oklch(0.78 0.14 145); }
+.fh-md-block .h2 { color: oklch(0.80 0.16 75); font-weight: 600; }
+.fh-md-block .li { color: oklch(0.86 0.012 90); }
+.fh-md-block .link { color: oklch(0.72 0.14 200); }
+
+.fh-syntax {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.5rem;
+  margin: 0.6rem 0 0.85rem;
+}
+.fh-syntax-row {
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  padding: 0.4rem 0.7rem;
+  background: var(--surface-alt);
+  border-radius: var(--r-sm);
+  border: 1px solid oklch(0.92 0.02 80);
+}
+.fh-syntax-row code {
+  color: var(--c);
+  font-weight: 600;
+  margin-right: 0.5rem;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.fh-syntax-row span { color: var(--ink-soft); font-family: var(--f-body); font-size: 0.84rem; }
+
+.fh-tip {
+  margin-top: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: oklch(0.96 0.04 85);
+  border-left: 3px solid var(--p3);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-size: 0.88rem;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.fh-tip strong { color: oklch(from var(--p3) calc(l - 0.18) c h); font-weight: 600; }
+.fh-tip code {
+  font-family: var(--f-mono);
+  background: var(--p3-soft);
+  color: oklch(from var(--p3) calc(l - 0.18) c h);
+  padding: 0.05rem 0.35rem;
+  font-size: 0.8rem;
+  border-radius: 3px;
+  border: 0;
+}
+
+/* ============================
+   WORKFLOWS (§08) — 실제 사용 사례
+   ============================ */
+.workflows {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+.wf-card {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  padding: 1.5rem 1.65rem 1.4rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--e1);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+  border-left: 4px solid var(--c, var(--p2));
+}
+.wf-card:hover { transform: translateY(-3px); box-shadow: var(--e3); }
+.wf-card::after {
+  content: "";
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, var(--c-soft, var(--p2-soft)) 0%, transparent 70%);
+  filter: blur(20px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.wf-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.22rem 0.65rem;
+  background: var(--c-soft, var(--p2-soft));
+  color: oklch(from var(--c, var(--p2)) calc(l - 0.18) c h);
+  border-radius: var(--r-pill);
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+  position: relative;
+}
+.wf-role::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c, var(--p2));
+}
+.wf-situation {
+  font-family: var(--f-display);
+  font-size: 1.18rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 0.85rem;
+  position: relative;
+}
+.wf-context {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 0.85rem;
+  position: relative;
+}
+.wf-systems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.95rem;
+  position: relative;
+}
+.wf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  background: var(--surface-alt);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-sm);
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--ink);
+  font-weight: 500;
+}
+.wf-chip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cc);
+}
+.wf-prompt-label {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  position: relative;
+}
+.wf-prompt {
+  padding: 0.85rem 1rem;
+  background: oklch(0.97 0.02 85);
+  border-left: 3px solid var(--c, var(--p2));
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-family: var(--f-display);
+  font-size: 1rem;
+  color: var(--ink);
+  line-height: 1.5;
+  font-style: italic;
+  position: relative;
+}
+.wf-prompt::before {
+  content: '"';
+  font-family: var(--f-display);
+  font-size: 1.6rem;
+  font-style: italic;
+  color: var(--c, var(--p2));
+  margin-right: 0.15rem;
+  vertical-align: -0.18em;
+}
+.wf-prompt::after {
+  content: '"';
+  font-family: var(--f-display);
+  font-size: 1.6rem;
+  font-style: italic;
+  color: var(--c, var(--p2));
+  margin-left: 0.15rem;
+  vertical-align: -0.18em;
+}
+.wf-out {
+  margin-top: 0.85rem;
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  position: relative;
+}
+.wf-out strong {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c, var(--p2));
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.wf-bottom-note {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: oklch(0.96 0.025 90);
+  border: 1px solid oklch(0.88 0.025 85);
+  border-radius: var(--r-md);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.wf-bottom-note strong { color: var(--p3); font-weight: 600; }
+
+/* ============================
+   SETUP (§08) — 직접 시작하기 (legacy, no longer used)
+   ============================ */
+.setup-section {
+  background: linear-gradient(180deg, transparent 0%, oklch(0.96 0.025 90) 100%);
+}
+.setup {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-lg);
+  box-shadow: var(--e2);
+  overflow: hidden;
+}
+.setup-step {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 1.5rem;
+  padding: 1.85rem 2rem;
+  border-bottom: 1px solid oklch(0.92 0.018 80);
+  transition: background 0.2s;
+}
+.setup-step:last-child { border-bottom: 0; }
+.setup-step:hover { background: var(--surface-alt); }
+@media (max-width: 600px) {
+  .setup-step { grid-template-columns: 1fr; padding: 1.5rem; gap: 0.8rem; }
+}
+.setup-step-num {
+  font-family: var(--f-display);
+  font-size: 2.6rem;
+  font-weight: 500;
+  color: var(--p3);
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  font-style: italic;
+}
+.setup-step-name {
+  font-family: var(--f-display);
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.55rem;
+  color: var(--ink);
+}
+.setup-step-body {
+  font-size: 0.92rem;
+  color: var(--ink);
+  line-height: 1.65;
+  margin-bottom: 0.85rem;
+}
+.setup-step-body strong { color: var(--p3); font-weight: 600; }
+.setup-step-body a { color: var(--p3); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.setup-step-body a:hover { color: oklch(from var(--p3) calc(l - 0.15) c h); }
+.setup-step-body code {
+  font-family: var(--f-mono);
+  background: var(--p3-soft);
+  color: oklch(from var(--p3) calc(l - 0.18) c h);
+  padding: 0.1rem 0.45rem;
+  font-size: 0.82rem;
+  border-radius: 3px;
+}
+.setup-cmd {
+  font-family: var(--f-mono);
+  font-size: 0.84rem;
+  background: oklch(0.16 0.02 245);
+  color: oklch(0.88 0.012 90);
+  padding: 0.7rem 1rem;
+  border-radius: var(--r-sm);
+  display: block;
+  margin: 0.45rem 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+.setup-cmd .comment { color: oklch(0.55 0.012 90); }
+.setup-cmd .key { color: oklch(0.78 0.14 145); font-weight: 500; }
+.setup-cmd .var { color: oklch(0.80 0.16 75); }
+.setup-note {
+  background: oklch(0.96 0.04 85);
+  border-left: 3px solid var(--p3);
+  padding: 0.75rem 1rem;
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-size: 0.86rem;
+  color: var(--ink);
+  line-height: 1.6;
+  margin-top: 0.6rem;
+}
+.setup-note strong { color: oklch(from var(--p3) calc(l - 0.18) c h); font-weight: 600; }
+.setup-note code {
+  font-family: var(--f-mono);
+  background: var(--p3-soft);
+  color: oklch(from var(--p3) calc(l - 0.18) c h);
+  padding: 0.05rem 0.35rem;
+  font-size: 0.78rem;
+  border-radius: 3px;
+}
+
+/* Reduce motion respect */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .loop-orbit .arc { animation: none; stroke-dashoffset: 25; }
+}
+</style>
+</head>
+
+<body data-role="grad">
+<div class="shell">
+
+<!-- ===== HERO (랜딩 + 3단계 빠른 시작) ===== -->
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">5분 만에 시작합니다 / for everyone</div>
+    <h1 class="h-display">AI <em>동료과학자</em> 만들기<br>— LLM-Wiki 구축 방법</h1>
+    <p class="lede">
+      ChatGPT를 쓰시든 Claude를 쓰시든 똑같이 됩니다. 앱을 켜고, 폴더를 하나 만들고, 링크 한 줄을 채팅창에 붙이면 끝입니다. 평소 카톡으로 설명할 때 쓰는 3단계 그대로 옮겨 적었습니다.
+    </p>
+
+    <!-- 3-step quick start -->
+    <div class="quickstart">
+      <div class="qs-card" style="--c: var(--p1); --c-soft: var(--p1-soft);">
+        <div class="qs-num">01<small>STEP</small></div>
+        <div class="qs-title">어떤 AI 쓰세요?</div>
+        <div class="qs-body">
+          <p>둘 중 하나만 고르시면 됩니다.</p>
+          <div class="qs-bullet"><span><strong>ChatGPT</strong> 쓰시는 분 → <code>Codex</code> 앱 다운로드</span></div>
+          <div class="qs-bullet"><span><strong>Claude</strong> 쓰시는 분 → <code>Claude</code> 앱 다운로드</span></div>
+          <p style="margin-top:0.6rem;color:var(--ink-muted);font-size:0.82rem;">두 앱 모두 작동 방식은 같습니다.</p>
+        </div>
+      </div>
+
+      <div class="qs-card" style="--c: var(--p3); --c-soft: var(--p3-soft);">
+        <div class="qs-num">02<small>STEP</small></div>
+        <div class="qs-title">폴더 하나 만들어 주세요</div>
+        <div class="qs-body">
+          <p>앱을 켜면 채팅창이 나옵니다.</p>
+          <div class="qs-bullet"><span><strong>Codex</strong>는 그대로 쓰시면 됩니다.</span></div>
+          <div class="qs-bullet"><span><strong>Claude</strong>는 화면 위쪽 <span class="qs-tab">세 번째 탭 "Code"</span>를 누르세요.</span></div>
+          <p style="margin-top:0.5rem;">채팅창 바로 위에 폴더 선택 메뉴가 보입니다. 컴퓨터에 <code>llm-wiki</code> 라는 폴더를 새로 하나 만드시고, 그 폴더를 선택하세요.</p>
+          <p style="margin-top:0.5rem;color:var(--ink-muted);font-size:0.82rem;">이제 거기가 작업 공간입니다.</p>
+        </div>
+      </div>
+
+      <div class="qs-card" style="--c: var(--p2); --c-soft: var(--p2-soft);">
+        <div class="qs-num">03<small>STEP</small></div>
+        <div class="qs-title">링크 붙이고 한 마디</div>
+        <div class="qs-body">
+          <p>채팅창에 아래 링크를 붙여 넣으세요.</p>
+          <div class="gist-box">
+            <span class="gist-label">GIST</span>
+            <span class="gist-url">https://gist.github.com/joonan30/cbce305684d079dbe9a3fbaefe4e3959</span>
+            <button class="gist-copy" id="gistCopy" onclick="
+              navigator.clipboard.writeText('https://gist.github.com/joonan30/cbce305684d079dbe9a3fbaefe4e3959');
+              this.textContent='복사됨'; this.classList.add('copied');
+              setTimeout(()=>{this.textContent='복사'; this.classList.remove('copied')}, 1800);
+            ">복사</button>
+          </div>
+          <p style="margin-top:0.6rem;">그리고 한 마디만 던지세요.</p>
+          <div class="qs-prompt">나도 이거 세팅해줘</div>
+          <p style="margin-top:0.6rem;color:var(--ink-muted);font-size:0.82rem;">끝입니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="story-bridge">
+      31-DAY CASE STUDY · 한 달 기록
+      <strong>이렇게 셋업한 폴더가 31일간 어떻게 자랐는지 보고 싶다면 ↓</strong>
+    </div>
+
+    <div class="hero-stats">
+      <div class="h-stat">
+        <div class="h-stat-num" data-count="31">0<small>일</small></div>
+        <div class="h-stat-lab">관찰 기간</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-num" data-count="3955">0</div>
+        <div class="h-stat-lab">위키 노트</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-num" data-count="567">0<small>줄</small></div>
+        <div class="h-stat-lab">운영 매뉴얼</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-num" data-count="13">0</div>
+        <div class="h-stat-lab">일일 모니터 리포트</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-num" data-count="5">0</div>
+        <div class="h-stat-lab">병렬 프로젝트</div>
+      </div>
+    </div>
+
+    <button class="scroll-cue" onclick="document.getElementById('primer').scrollIntoView({behavior:'smooth'})">
+      세 개념부터 보기 <span class="arrow"></span>
+    </button>
+  </div>
+</section>
+
+<!-- ===== FIRST HOUR — 처음 쓸 때 알아둘 것 ===== -->
+<section class="fh-section" id="first-hour">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">FIRST HOUR</span> · 셋업 직후, 처음 한 시간</div>
+      <h2 class="sec-title">진짜 처음 보는 <em>다섯 가지</em></h2>
+      <p class="sec-sub">
+        gist 붙여 넣고 "나도 이거 세팅해줘" 한 마디로 셋업이 끝나면, 곧바로 마주치는 다섯 가지가 있습니다. ingest가 뭔지, 마크다운이 뭔지, AI가 묻는 "allow"가 뭔지 — 이 페이지의 어떤 그래프나 단계보다 먼저 알아두면 좋습니다.
+      </p>
+    </div>
+
+    <div class="fh-grid">
+      <!-- Card 1: ingest -->
+      <div class="fh-card" style="--c: var(--p2);">
+        <div class="fh-num">QUESTION 01</div>
+        <div class="fh-q">"ingest" — <em>뭐 하는 건가요?</em></div>
+        <div class="fh-a">
+          PDF 한 편을 AI가 읽고, <strong>요약 마크다운</strong>(<code>sources/</code>)과 <strong>구조화된 위키 노트</strong>(<code>wiki/</code>)로 자동 변환하는 과정. "논문 정리하다"를 위키에서 부르는 짧은 말입니다.
+        </div>
+        <div class="fh-a">
+          한 편 ingest = 폴더 안에 마크다운 노트 1편 + 위키 페이지 1편이 새로 생긴다는 뜻. 채팅창에 한국어로 "정리해줘"라고 해도 알아듣지만, 위키 안에서는 "ingest"가 더 정확합니다 — 어떤 문서를 시스템 안으로 가져와 처리하는 행위.
+        </div>
+      </div>
+
+      <!-- Card 2: PDF 1편 첫 시도 -->
+      <div class="fh-card" style="--c: var(--p1);">
+        <div class="fh-num">QUESTION 02</div>
+        <div class="fh-q">처음엔 <em>PDF 1편</em>으로 작게</div>
+        <div class="fh-a">
+          셋업 끝나고 가장 먼저 할 일. 책상 위에 있는 PDF 한 편을 채팅창에 끌어다 놓고 한 마디:
+        </div>
+        <div class="fh-prompt-inline">이 PDF ingest해줘</div>
+        <div class="fh-a">
+          AI가 <code>papers/</code>에 PDF 옮기고, <code>sources/</code>에 요약 마크다운 만들고, <code>wiki/</code>의 적절한 카테고리 폴더에 노트를 넣습니다. <strong>5분이면 첫 결과</strong>가 나옵니다. 시스템이 잘 작동하는지 한 번 확인하는 단계.
+        </div>
+      </div>
+
+      <!-- Card 3: 서지 프로그램 폴더 (full width) -->
+      <div class="fh-card span-2" style="--c: var(--p4);">
+        <div class="fh-num">QUESTION 03</div>
+        <div class="fh-q">그 다음엔 <em>서지 프로그램 폴더</em> 통째로</div>
+        <div class="fh-a">
+          한 편씩 끌어다 넣을 수도 있지만, Zotero · EndNote · Mendeley에 PDF가 이미 수십~수백 편 쌓여 있다면 그 폴더 위치를 한 번만 알려주면 됩니다. 이후엔 거기 있는 모든 PDF가 ingest 대상이 됩니다.
+        </div>
+        <div class="fh-a-emph">"폴더 위치"가 뭔지 모르겠다? AI에게 물으면 됩니다.</div>
+        <div class="fh-prompt-inline">내 컴퓨터에서 Zotero PDF 폴더 위치 찾아줘</div>
+        <div class="fh-a">
+          AI가 일반적인 위치들을 자동으로 검색해서 알려줍니다. 사용 중인 OS, 계정명, 설치 경로까지 알아서 파악합니다. <strong>여러분이 폴더 경로를 외울 필요 없습니다.</strong>
+        </div>
+        <div class="fh-a" style="margin-top:1.1rem;">참고로 — 직접 확인하고 싶다면 보통 이 위치들에 있습니다:</div>
+        <div class="fh-paths">
+          <div class="fh-path-os">
+            <div class="fh-path-os-label">Mac</div>
+            <ul>
+              <li><strong>Zotero</strong> <code>~/Zotero/storage</code></li>
+              <li><strong>EndNote</strong> <code>라이브러리.Data/PDF</code></li>
+              <li><strong>Mendeley</strong> <code>~/Library/Application Support/Mendeley</code></li>
+            </ul>
+          </div>
+          <div class="fh-path-os">
+            <div class="fh-path-os-label">Windows</div>
+            <ul>
+              <li><strong>Zotero</strong> <code>C:\Users\이름\Zotero\storage</code></li>
+              <li><strong>EndNote</strong> <code>내 문서\EndNote\</code></li>
+              <li><strong>Mendeley</strong> <code>AppData\Local\Mendeley Ltd</code></li>
+            </ul>
+          </div>
+        </div>
+        <div class="fh-tip">
+          <strong>한 번 등록 = 매일 자동.</strong> 폴더 위치를 한 번 알려주면, 그 이후엔 새로 추가된 PDF만 자동 ingest됩니다. 서지 프로그램에서 페이퍼 한 편 받으면 → 다음 ingest 사이클에 알아서 들어옵니다.
+        </div>
+      </div>
+
+      <!-- Card 4: 마크다운 + 예시 (full width) -->
+      <div class="fh-card span-2" style="--c: var(--p3);">
+        <div class="fh-num">QUESTION 04</div>
+        <div class="fh-q">"마크다운"이 <em>뭐고</em>, 결과 노트는 어떻게 생겼나</div>
+        <div class="fh-a">
+          마크다운 = 텍스트에 <code>#</code>·<code>*</code>·<code>-</code> 같은 기호 몇 개로 제목·강조·목록을 표시하는 형식. <strong>코드 아닙니다. 그냥 메모장으로도 열리는 평범한 텍스트.</strong>
+        </div>
+        <div class="fh-syntax">
+          <div class="fh-syntax-row"><code># </code><span>제목</span></div>
+          <div class="fh-syntax-row"><code>## </code><span>부제목</span></div>
+          <div class="fh-syntax-row"><code>**굵게**</code></div>
+          <div class="fh-syntax-row"><code>- </code><span>목록</span></div>
+          <div class="fh-syntax-row"><code>[[link]]</code><span>위키 링크</span></div>
+        </div>
+        <div class="fh-a">
+          파일 확장자 <code>.md</code> = 마크다운 파일. VS Code · Obsidian · 메모장 등 어디서든 열립니다. <strong>위키 노트 1편 = .md 파일 1개</strong>. 누구나 열어 볼 수 있고, 검색되고, 다른 노트와 자동으로 연결됩니다.
+        </div>
+        <div class="fh-a" style="margin-top:1.1rem;">ingest하면 노트가 이렇게 생깁니다:</div>
+<div class="fh-md-block"><span class="fm">---
+<span class="key">title</span>: 신규 위험 유전자 12개 동정 (논문 제목)
+<span class="key">authors</span>: First-Author, J. et al.
+<span class="key">year</span>: 2024
+<span class="key">journal</span>: Nature
+<span class="key">category</span>: disease-genetics
+<span class="key">tags</span>: [single-cell, mouse, brain]
+---</span>
+
+<span class="h2">## Summary</span>
+<span class="li">- 154개 trio에서 de novo variant 분석</span>
+<span class="li">- LoF burden이 affected proband에서 1.4배 증가</span>
+<span class="li">- 12개 신규 위험 유전자 동정</span>
+
+<span class="h2">## Key methods</span>
+<span class="li">- whole genome sequencing (parent-child trio)</span>
+<span class="li">- protein-truncating + missense damaging 분리 분석</span>
+
+<span class="h2">## Related</span>
+<span class="li">- <span class="link">[[overviews/disease-genetics]]</span></span>
+<span class="li">- <span class="link">[[concepts/de-novo-mutations]]</span></span>
+<span class="li">- <span class="link">[[methods/trio-wgs]]</span></span></div>
+        <div class="fh-a">
+          위 텍스트가 그대로 <code>.md</code> 파일에 적힌 내용입니다. 메모장으로 열면 위 텍스트가 그대로 보이고, Obsidian 같은 도구에서는 제목과 링크가 예쁘게 렌더링됩니다. <strong>핵심은 텍스트 그 자체가 데이터</strong>라는 것 — 어디 가둬져 있지 않고 어떤 도구로든 다룰 수 있습니다.
+        </div>
+      </div>
+
+      <!-- Card 5: allow + auto mode (full width) -->
+      <div class="fh-card span-2" style="--c: var(--p5);">
+        <div class="fh-num">QUESTION 05</div>
+        <div class="fh-q">에이전트가 "allow" 물어요. <em>컴퓨터 안 망가지나요?</em></div>
+        <div class="fh-a-emph">안 망가집니다.</div>
+        <div class="fh-a">
+          AI가 파일 읽기·쓰기·실행 전에 매번 물어보는 <strong>안전장치</strong>입니다. 권한은 그 폴더 안에서만 작동합니다 — <code>~/llm-wiki</code>에 들어간 작업은 그 폴더만 건드립니다. 다른 위치는 못 만집니다. 매번 거절할 수 있고, 거절해도 다음 행동으로 넘어갑니다.
+        </div>
+        <div class="fh-a" style="margin-top:1rem;">매번 누르기 귀찮으면 <strong>auto mode</strong> 켜기:</div>
+        <div class="fh-syntax" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+          <div class="fh-syntax-row"><code>Claude Code</code><br><span style="font-size:0.78rem;">Shift+Tab으로 토글 → 그 세션 자동 수락</span></div>
+          <div class="fh-syntax-row"><code>Codex CLI</code><br><span style="font-size:0.78rem;">--yes 옵션 또는 설정에서 auto-approve</span></div>
+        </div>
+        <div class="fh-tip">
+          <strong>처음 며칠은 직접 누르세요.</strong> AI가 어떤 행동을 하려는지 한 번씩 보면 어떻게 작동하는지 감이 잡힙니다. 익숙해지면 그때 auto mode로 넘어가세요. 익숙해지기 전엔 매번 누르는 게 안전감도 학습 효과도 더 높습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ROLE BAR — 케이스 스터디 진입 지점에서 등장, 이후 sticky ===== -->
+<div class="role-bar">
+  <div class="wrap role-inner">
+    <span class="role-label">여기부터 역할별로 갈라집니다 · 읽는 사람</span>
+    <div class="role-pills" id="rolePills">
+      <button class="role-pill" data-role="undergrad" style="--accent: var(--role-undergrad);" aria-pressed="false">
+        <span class="glyph"></span>학부 연구생
+      </button>
+      <button class="role-pill" data-role="grad" style="--accent: var(--role-grad);" aria-pressed="true">
+        <span class="glyph"></span>대학원생
+      </button>
+      <button class="role-pill" data-role="staff" style="--accent: var(--role-staff);" aria-pressed="false">
+        <span class="glyph"></span>연구원
+      </button>
+      <button class="role-pill" data-role="pi" style="--accent: var(--role-pi);" aria-pressed="false">
+        <span class="glyph"></span>교수 / PI
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== §00 CONCEPT PRIMER ===== -->
+<section class="primer-section" id="primer">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">00</span> · 시작하기 전에</div>
+      <h2 class="sec-title">이 페이지가 다루는 <em>세 개의 개념</em></h2>
+      <p class="sec-sub">
+        AI를 옆에 두고 일하는 연구자가 자기 지식을 어떻게 쌓는가의 이야기다. 본문에 들어가기 전에 세 가지부터 정리한다. <strong style="color:var(--p2);">LLM Wiki</strong>가 무엇인지, <strong style="color:var(--p3);">에이전트</strong>가 무엇인지, 그 둘이 어떻게 <strong style="color:var(--p5);">지식 체인</strong>을 만드는지.
+      </p>
+    </div>
+
+    <div class="primer-grid">
+      <div class="primer-card" style="--c: var(--p2); --c-soft: var(--p2-soft);">
+        <div class="primer-num">CONCEPT 01</div>
+        <div class="primer-name">LLM Wiki</div>
+        <div class="primer-tag">Karpathy 패턴</div>
+        <div class="primer-body">
+          한 페이퍼를 세 형태로 동시에 보관한다. <strong>원본 PDF</strong>, <strong>LLM 요약 마크다운</strong>, 그리고 <strong>구조화된 위키 페이지</strong>. 같은 정보의 세 검색 표면이다. PDF는 정확한 인용 때 연다. 요약 마크다운은 훑을 때 쓴다. 위키 페이지는 백링크 따라가며 종합할 때 들어간다.
+        </div>
+        <div class="primer-stat">3,398 PDF · 3,369 요약 · 3,955 위키 노트</div>
+      </div>
+
+      <div class="primer-card" style="--c: var(--p3); --c-soft: var(--p3-soft);">
+        <div class="primer-num">CONCEPT 02</div>
+        <div class="primer-name">Agent</div>
+        <div class="primer-tag">두 번째 작업자</div>
+        <div class="primer-body">
+          폴더 루트의 <code>AGENTS.md</code>를 매 세션 처음에 다시 읽고, 그 룰에 따라 작업하는 AI. 이 위키는 <strong>Claude</strong> (대화형) + <strong>Codex CLI</strong> (자동화) 두 에이전트가 같은 룰로 같이 쓴다. 명령이 아니라 목표를 준다.
+        </div>
+        <div class="primer-stat">567줄 매뉴얼 · 2 에이전트 · 1 공유 폴더</div>
+      </div>
+
+      <div class="primer-card" style="--c: var(--p5); --c-soft: var(--p5-soft);">
+        <div class="primer-num">CONCEPT 03</div>
+        <div class="primer-name">지식 체인</div>
+        <div class="primer-tag">누적 사슬</div>
+        <div class="primer-body">
+          연구자의 지식은 한 층이 아니라 <strong>여섯 층</strong>으로 누적된다. PDF → 요약 → 위키 → 종합 → 스펙 → 결과. 이전 층 없이는 다음 층이 존재할 수 없다. 체인의 어느 단계가 끊기면 위쪽 전체가 무너진다.
+        </div>
+        <div class="primer-stat">6 단계 · 각자 폴더 · 모두 검색 가능</div>
+      </div>
+    </div>
+
+    <!-- Knowledge Chain Diagram -->
+    <div class="chain">
+      <div class="chain-head">
+        <h3 class="chain-title">PDF에서 결과까지, <em>여섯 단계의 체인</em></h3>
+        <p class="chain-sub">각 단계는 그 아래 단계 없이는 존재할 수 없다. 노드를 클릭해 단계의 의미를 펼쳐 보라.</p>
+      </div>
+
+      <div class="chain-svg-wrap">
+        <svg class="chain-svg" viewBox="0 0 1100 220" id="chainSvg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(0.55 0.02 245)" />
+            </marker>
+            <filter id="chainGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" />
+            </filter>
+          </defs>
+          <!-- chain backbone -->
+          <line x1="100" y1="110" x2="1000" y2="110" stroke="oklch(0.85 0.02 80)" stroke-width="2" stroke-dasharray="4 4"/>
+          <!-- nodes will be drawn by JS -->
+          <g id="chainNodes"></g>
+          <g id="chainLabels"></g>
+        </svg>
+      </div>
+
+      <div class="chain-detail" id="chainDetail">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- Reading Guide -->
+    <div class="reading-guide">
+      <h3 class="rg-title">이 페이지를 어떻게 읽나</h3>
+      <p class="rg-sub">7개 섹션. 위에서 선택한 역할에 따라 우선 봐야 할 섹션이 다르다. 점은 그 섹션에 가장 도움받을 역할을 표시한다.</p>
+      <div class="rg-grid">
+        <a href="#flow" class="rg-item">
+          <div class="rg-num">§01</div>
+          <div class="rg-name">Compounding Flow</div>
+          <div class="rg-desc">31일이 어떻게 누적됐나. 매일의 호흡.</div>
+          <div class="rg-roles">
+            <span style="background:var(--role-undergrad)" title="학부생"></span>
+            <span style="background:var(--role-grad)" title="대학원생"></span>
+            <span style="background:var(--role-staff)" title="연구원"></span>
+            <span style="background:var(--role-pi)" title="PI"></span>
+          </div>
+        </a>
+        <a href="#phases" class="rg-item">
+          <div class="rg-num">§02</div>
+          <div class="rg-name">Five Phases</div>
+          <div class="rg-desc">5번의 분기점. 각 단계의 폴더 스냅샷.</div>
+          <div class="rg-roles">
+            <span style="background:var(--role-undergrad)" title="학부생"></span>
+            <span style="background:var(--role-grad)" title="대학원생"></span>
+          </div>
+        </a>
+        <a href="#trellis" class="rg-item">
+          <div class="rg-num">§03</div>
+          <div class="rg-name">Governance Trellis</div>
+          <div class="rg-desc">머릿속 룰을 글로 박은 순간.</div>
+          <div class="rg-roles">
+            <span style="background:var(--role-staff)" title="연구원"></span>
+            <span style="background:var(--role-pi)" title="PI"></span>
+          </div>
+        </a>
+        <a href="#loops" class="rg-item">
+          <div class="rg-num">§04</div>
+          <div class="rg-name">Recurring Loops</div>
+          <div class="rg-desc">매일·주간·분기점에 도는 5개 루프.</div>
+          <div class="rg-roles">
+            <span style="background:var(--role-undergrad)" title="학부생"></span>
+            <span style="background:var(--role-grad)" title="대학원생"></span>
+            <span style="background:var(--role-staff)" title="연구원"></span>
+          </div>
+        </a>
+        <a href="#anatomy" class="rg-item">
+          <div class="rg-num">§05</div>
+          <div class="rg-name">Backlog Anatomy</div>
+          <div class="rg-desc">분석 단위 한 항목의 6행 해부.</div>
+          <div class="rg-roles">
+            <span style="background:var(--role-grad)" title="대학원생"></span>
+            <span style="background:var(--role-staff)" title="연구원"></span>
+            <span style="background:var(--role-pi)" title="PI"></span>
+          </div>
+        </a>
+        <a href="#playbooks" class="rg-item">
+          <div class="rg-num">§06</div>
+          <div class="rg-name">Role Playbooks</div>
+          <div class="rg-desc">학부·대학원·연구원·PI 30일 플레이북.</div>
+          <div class="rg-roles">
+            <span style="background:var(--role-undergrad)" title="학부생"></span>
+            <span style="background:var(--role-grad)" title="대학원생"></span>
+            <span style="background:var(--role-staff)" title="연구원"></span>
+            <span style="background:var(--role-pi)" title="PI"></span>
+          </div>
+        </a>
+        <a href="#adapt" class="rg-item">
+          <div class="rg-num">§07</div>
+          <div class="rg-name">Adapt 8 원칙</div>
+          <div class="rg-desc">다른 분야로 옮기는 이전 가능한 원칙.</div>
+          <div class="rg-roles">
+            <span style="background:var(--role-pi)" title="PI"></span>
+          </div>
+        </a>
+        <a href="#workflows" class="rg-item">
+          <div class="rg-num">§08</div>
+          <div class="rg-name">Real Workflows</div>
+          <div class="rg-desc">PI 학생 피드백, 미팅 자료, manuscript 검토, 협업 — 채팅창 한 마디 사례 5개.</div>
+          <div class="rg-roles">
+            <span style="background:var(--role-undergrad)" title="학부생"></span>
+            <span style="background:var(--role-grad)" title="대학원생"></span>
+            <span style="background:var(--role-staff)" title="연구원"></span>
+            <span style="background:var(--role-pi)" title="PI"></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== §00B BEYOND THE WIKI ===== -->
+<section class="eco-section" id="ecosystem">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">00 B</span> · BEYOND THE WIKI</div>
+      <h2 class="sec-title">위키 옆에 생긴 폴더들</h2>
+      <p class="sec-sub">
+        처음엔 <code style="font-family:var(--f-mono);background:var(--p2-soft);padding:0.1rem 0.4rem;border-radius:3px;font-size:0.85rem;">papers/sources/wiki</code> 세 폴더만 있었다. 31일 뒤엔 그 옆에 일곱 폴더가 더 붙고, 외부 시스템 세 곳과 묶였다. 이 페이지가 다루는 건 위키 한 폴더가 아니라 그 둘레 전부다.
+      </p>
+    </div>
+
+    <!-- Tier 1: Core 3 -->
+    <div class="eco-tier">
+      <div class="eco-tier-label">Core <span class="count">3 폴더 · Karpathy 패턴</span></div>
+      <div class="eco-grid-core">
+        <div class="eco-card" style="--c: var(--p1); --c-soft: var(--p1-soft);">
+          <div class="eco-folder">papers/</div>
+          <div class="eco-name">원본 PDF</div>
+          <div class="eco-body">인용할 때만 연다. 모든 추론의 바닥.</div>
+          <div class="eco-stat">3,398 PDF</div>
+        </div>
+        <div class="eco-card" style="--c: var(--p3); --c-soft: var(--p3-soft);">
+          <div class="eco-folder">sources/</div>
+          <div class="eco-name">LLM 요약</div>
+          <div class="eco-body">페이퍼 1편이 마크다운 1개로. 빠르게 훑을 때 쓴다.</div>
+          <div class="eco-stat">3,369 마크다운 노트</div>
+        </div>
+        <div class="eco-card" style="--c: var(--p2); --c-soft: var(--p2-soft);">
+          <div class="eco-folder">wiki/</div>
+          <div class="eco-name">구조화 노트</div>
+          <div class="eco-body">백링크·frontmatter·카테고리. 재사용되는 지식 원자.</div>
+          <div class="eco-stat">3,955 페이지 / 38 카테고리</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 2: Operations 7 -->
+    <div class="eco-tier">
+      <div class="eco-tier-label">Operations <span class="count">7 폴더 · 한 달 사이 신설</span></div>
+      <div class="eco-grid-ops">
+        <div class="eco-card" style="--c: var(--p4); --c-soft: var(--p4-soft);">
+          <div class="eco-folder">agenda/</div>
+          <div class="eco-name">분석 스펙</div>
+          <div class="eco-body">Goal·Input·Output·Done이 박힌 작업 단위. 핸드오프 노트와 매핑 단일 소스도 여기.</div>
+        </div>
+        <div class="eco-card" style="--c: var(--p5); --c-soft: var(--p5-soft);">
+          <div class="eco-folder">interactives/</div>
+          <div class="eco-name">시각화</div>
+          <div class="eco-body">이 페이지를 포함한 13개 인터랙티브. 데이터와 HTML 묶음.</div>
+        </div>
+        <div class="eco-card" style="--c: var(--p3); --c-soft: var(--p3-soft);">
+          <div class="eco-folder">slides/</div>
+          <div class="eco-name">강의·발표</div>
+          <div class="eco-body">강의자료, 컨퍼런스 발표, 그룹 미팅 슬라이드. 위키 노트가 슬라이드의 1차 입력.</div>
+        </div>
+        <div class="eco-card" style="--c: var(--p2); --c-soft: var(--p2-soft);">
+          <div class="eco-folder">peer-review/</div>
+          <div class="eco-name">외부 페이퍼 리뷰</div>
+          <div class="eco-body">저널 리뷰 작업. 위키의 관련 노트와 백링크로 묶인다.</div>
+        </div>
+        <div class="eco-card" style="--c: var(--p1); --c-soft: var(--p1-soft);">
+          <div class="eco-folder">note-meeting/</div>
+          <div class="eco-name">미팅 기록</div>
+          <div class="eco-body">미팅마다 한 파일. 결정 사항이 위키 노트로 자동 백링크.</div>
+        </div>
+        <div class="eco-card" style="--c: var(--p4); --c-soft: var(--p4-soft);">
+          <div class="eco-folder">scripts/</div>
+          <div class="eco-name">자동화</div>
+          <div class="eco-body">paper monitor 1,101줄 + 인제스트 배치 + audit. 매일 도는 코드.</div>
+        </div>
+        <div class="eco-card" style="--c: var(--p3); --c-soft: var(--p3-soft);">
+          <div class="eco-folder">logs/</div>
+          <div class="eco-name">audit 로그</div>
+          <div class="eco-body">깨진 wikilinks, 중복 stem, 메타데이터 블로커. 정리 작업의 흔적.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bridge -->
+    <div class="eco-bridge">외부 시스템과 묶인다</div>
+
+    <!-- Tier 3: External 5 -->
+    <div class="eco-tier">
+      <div class="eco-tier-label">External <span class="count">5 시스템 · MCP로 연결</span></div>
+      <div class="eco-grid-ext">
+        <div class="eco-card-ext" style="--c: var(--p4); --c-soft: var(--p4-soft);">
+          <div class="eco-ext-icon">N</div>
+          <div class="eco-name">Notion</div>
+          <div class="eco-body">
+            가명 프로젝트 5개 DB (PROJECT-α, β, γ, δ, ε). 협업의 중심 — 위키 노트를 프로젝트 페이지로 옮기고, 학생·공동연구자에게 전달하고, 미팅 노트를 모은다. 모든 DB가 동일한 3-앵커 (📚 참고 논문 / 📅 미팅 노트 / 🗂 리소스).
+          </div>
+          <div class="eco-stat">5 DB · 3 표준 앵커</div>
+        </div>
+        <div class="eco-card-ext" style="--c: var(--p2); --c-soft: var(--p2-soft);">
+          <div class="eco-ext-icon">S</div>
+          <div class="eco-name">Slack MCP</div>
+          <div class="eco-body">
+            팀 채널에 위키 링크 공유, 일일 모니터 결과 포스트, 학생 → 사수 보고 자동화. "오늘 ingest한 페이퍼 3편 한 줄 요약해서 #lab-papers에 올려줘" 한 마디면 된다.
+          </div>
+          <div class="eco-stat">실시간 알림 · 채널 자동 포스트</div>
+        </div>
+        <div class="eco-card-ext" style="--c: var(--p3); --c-soft: var(--p3-soft);">
+          <div class="eco-ext-icon">G</div>
+          <div class="eco-name">Gmail MCP</div>
+          <div class="eco-body">
+            공동연구자에게 미팅 자료 발송, 페이퍼 회신, 협력 메일 초안 작성. 위키에서 자료 추리고 → 메일 본문 → 첨부까지 한 흐름. "X 박사한테 이번 주 결과 정리해서 메일 초안 써줘"가 일상이 된다.
+          </div>
+          <div class="eco-stat">메일 초안 · 자료 첨부</div>
+        </div>
+        <div class="eco-card-ext" style="--c: var(--p1); --c-soft: var(--p1-soft);">
+          <div class="eco-ext-icon">$</div>
+          <div class="eco-name">Grants</div>
+          <div class="eco-body">
+            가명 과제 4건 (GRANT-A, B, C, D). 노션 DB ↔ 그랜트 매핑이 <code>agenda/notion-grant-mapping.md</code> 단일 소스에 있다. 매 세션 처음 이 파일을 다시 읽고, 그날 작업이 어느 과제로 갈지 판정한다.
+          </div>
+          <div class="eco-stat">4 과제 · 1 매핑 파일</div>
+        </div>
+        <div class="eco-card-ext" style="--c: var(--p5); --c-soft: var(--p5-soft);">
+          <div class="eco-ext-icon">A</div>
+          <div class="eco-name">AI Agents</div>
+          <div class="eco-body">
+            <strong>Claude</strong>는 대화형 — 분석 스펙·미팅 노트·인터랙티브·메일 초안을 짠다. <strong>Codex CLI</strong>는 배치 자동화 — paper monitor·인제스트·audit. 둘 다 같은 AGENTS.md 567줄을 공유한다.
+          </div>
+          <div class="eco-stat">2 에이전트 · 1 매뉴얼</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="role-callout">
+      <div class="role-callout-head">역할별로 본 이 생태계</div>
+      <div class="role-callout-body" data-show-role="undergrad">
+        <strong>학부생이라면.</strong> 처음엔 Core 3 폴더만 만져도 충분하다. Operations 7개는 시간이 지나면 자연히 손이 간다. External 5는 사수가 셋업한 걸 그대로 쓰면 된다 — Slack에 "오늘 본 페이퍼 사수한테 보고해줘" 한 마디 정도부터.
+      </div>
+      <div class="role-callout-body" data-show-role="grad">
+        <strong>대학원생은 먼저</strong> 자기 프로젝트가 노션 DB 하나에 매핑되어 있는지 확인할 것. 매일 만지는 폴더는 papers·sources·wiki·agenda 네 개. Slack/Gmail MCP는 미팅·협업 시즌에 진가를 발휘한다 — 미팅 자료 메일 초안, 공동연구자 답신.
+      </div>
+      <div class="role-callout-body" data-show-role="staff">
+        <strong>연구원의 핵심 책임:</strong> External 5의 일관성이다. 5개 노션 DB가 표준 3-앵커를 갖고 있는지, notion-grant-mapping이 최신인지, Slack 채널 매핑이 살아있는지, Gmail 자동 발송 룰이 정상 작동하는지를 매주 점검한다.
+      </div>
+      <div class="role-callout-body" data-show-role="pi">
+        <strong>PI 입장에서 가장 중요한 건</strong> External Grants 카드와 Notion 학생 노트. 4개 과제가 각자 어떤 노션 DB와 어떤 위키 폴더에 묶여 있는지가 한 파일에 있고, 학생들의 주간 노션 노트와 신규 위키를 한 번에 보면 미팅 전에 학생별 피드백 초안이 5분 만에 나온다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPOUNDING FLOW (HERO VIZ) ===== -->
+<section class="flow-section" id="flow">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">01</span> · COMPOUNDING FLOW</div>
+      <h2 class="sec-title">오늘은 <em>어제</em> 위에 쌓인다</h2>
+      <p class="sec-sub">
+        아래 차트에서 31일 동안 5개의 운영 레이어가 어떻게 쌓였는지 본다.
+        각 레이어는 사라지지 않는다. 새 레이어가 올라올수록 시스템은 겹겹이 쌓인다.
+        이때부터 위키는 저장소가 아니라 <em>운영체제</em>에 가까워진다.
+      </p>
+    </div>
+
+    <div class="flow-card">
+      <div class="flow-svg-wrap" id="flowWrap">
+        <svg id="flowSvg" class="flow-svg" viewBox="0 0 1000 380" preserveAspectRatio="none" aria-label="31일간 5개 레이어의 누적 흐름">
+          <defs>
+            <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1.2"/>
+            </filter>
+            <filter id="liquidBlur" x="-5%" y="-5%" width="110%" height="110%">
+              <feGaussianBlur stdDeviation="0.6"/>
+            </filter>
+          </defs>
+          <!-- y-axis grid -->
+          <g stroke="oklch(0.85 0.02 80)" stroke-dasharray="2 4" stroke-width="0.5">
+            <line x1="50" y1="60" x2="970" y2="60"/>
+            <line x1="50" y1="140" x2="970" y2="140"/>
+            <line x1="50" y1="220" x2="970" y2="220"/>
+            <line x1="50" y1="300" x2="970" y2="300"/>
+          </g>
+          <line x1="50" y1="340" x2="970" y2="340" stroke="oklch(0.40 0.04 245)" stroke-width="1"/>
+          <!-- Layers will be drawn here -->
+          <g id="flowLayers"></g>
+          <!-- annotation markers -->
+          <g id="flowMarkers"></g>
+          <!-- hover line -->
+          <line id="flowHover" x1="0" y1="30" x2="0" y2="340" stroke="oklch(0.18 0.03 245)" stroke-width="1" opacity="0"/>
+        </svg>
+        <div class="flow-tip" id="flowTip"></div>
+      </div>
+      <div class="flow-axis-x" id="flowAxis"></div>
+      <div class="flow-legend" id="flowLegend"></div>
+    </div>
+
+    <div class="ledger" id="ledger">
+      <div class="ledger-head">
+        <div>
+          <div class="ledger-title">31일 일일 원장 — 매일이 보인다</div>
+          <div class="ledger-hint">막대 = 그날 변경된 파일 수 (log scale) · ★ = 분기점 · 클릭해서 그날 일을 펼쳐 보라</div>
+        </div>
+        <div class="ledger-scale">
+          <span class="sc"><span class="sw" style="background: oklch(0.92 0.015 85); border: 1px dashed oklch(0.82 0.02 80);"></span>휴지</span>
+          <span class="sc"><span class="sw" style="background: oklch(0.84 0.04 90);"></span>저</span>
+          <span class="sc"><span class="sw" style="background: oklch(0.66 0.10 90);"></span>중</span>
+          <span class="sc"><span class="sw" style="background: oklch(0.50 0.13 90);"></span>고</span>
+          <span class="sc"><span class="sw" style="background: oklch(0.38 0.14 90);"></span>스파이크</span>
+        </div>
+      </div>
+      <div class="ledger-strip" id="ledgerStrip"></div>
+      <div class="ledger-axis" id="ledgerAxis"></div>
+      <div class="ledger-detail" id="ledgerDetail"></div>
+      <div class="ledger-nav">
+        <button id="prevDay">← 전날</button>
+        <button id="todayBtn">오늘 (5/8)</button>
+        <button id="nextDay">다음날 →</button>
+      </div>
+    </div>
+
+    <div class="role-callout">
+      <div class="role-callout-head">역할별로 이 원장을 읽는 법</div>
+      <div class="role-callout-body" data-show-role="undergrad">
+        <strong>학부생이라면.</strong> 4월 8일에 처음 들어왔다고 상상해 보면, 그날 위키는 거의 비어 있었다. 31일 뒤엔 4,000개에 가까운 노트와 567줄짜리 매뉴얼이 있다. 새로 들어왔을 때 어디서부터 봐야 하나 막막해도 괜찮다. 5층 중 1~2층(papers, sources)만 먼저 익히고 나머지는 시간이 지나면서 자연히 보인다.
+      </div>
+      <div class="role-callout-body" data-show-role="grad">
+        <strong>대학원생이 자주 만지는 건</strong> 4번 레이어(일일 운영 루프)와 5번 레이어(분석 스펙) 두 곳. 이 두 레이어가 가장 늦게 나타났지만 가장 빠르게 쌓이고 있다. 매일 paper monitor를 돌리고 분석 백로그 한 항목을 클로징하면 이 두 레이어가 자란다.
+      </div>
+      <div class="role-callout-body" data-show-role="staff">
+        <strong>연구원이 매일 만지는 곳은,</strong> 3번(규칙)과 4번(운영) 레이어 두 곳. 이 두 레이어의 일관성이 연구원 손에 달려 있다. 새 학생이 들어오거나 새 프로젝트가 들어와도 두께가 일정하게 유지돼야 한다. 4월 29일의 점프(488줄 등장)가 그 일관성을 처음으로 글로 옮긴 시점이다.
+      </div>
+      <div class="role-callout-body" data-show-role="pi">
+        <strong>PI 입장에선,</strong> 1~2번 레이어는 학생들이 매일 채운다. PI가 봐야 할 건 3번(규칙)과 5번(분석). 3번은 두 에이전트가 같은 룰로 움직이는지, 5번은 위키 작업이 실제 연구 결과로 환산되고 있는지를 본다. 5번 레이어가 자라지 않으면 위키가 비싼 일기장이 되고 있다는 경고다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PHASE EXPLORER ===== -->
+<section id="phases">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">02</span> · FIVE PHASES</div>
+      <h2 class="sec-title">다섯 번의 분기점</h2>
+      <p class="sec-sub">한 달이 균일하지는 않았다. 다섯 번의 분기점이 있었고, 각 시점이 시스템에 새 레이어를 더했다. 카드를 클릭해 그 시점의 폴더 스냅샷을 펼쳐 보라.</p>
+    </div>
+
+    <div class="phase-rail" id="phaseRail"></div>
+    <div class="phase-stage" id="phaseStage"></div>
+
+    <div class="role-callout">
+      <div class="role-callout-head">역할별로 가장 중요한 단계</div>
+      <div class="role-callout-body" data-show-role="undergrad">
+        <strong>학부생이 먼저 보는 건 Phase 1~2 (덤프 → 분류).</strong> 처음 들어왔을 때 가장 먼저 부딪히는 질문은 "이 폴더에 뭐가 있나". Phase 1의 단순 3폴더 구조(papers/sources/wiki)부터 익히고, Phase 2의 카테고리는 한 달 분량의 도메인 지도로 본다. 외워야 할 게 아니라 검색할 때 어디를 봐야 하는지의 힌트.
+      </div>
+      <div class="role-callout-body" data-show-role="grad">
+        <strong>대학원생의 일상은 Phase 4~5 (운영 → 분석)에 있다.</strong> 매일 돌아가는 paper_monitor, 분석 스펙을 작성해 서브에이전트에 던지는 워크플로. Phase 5의 "Assignable Prompt" 패턴을 익히면 자는 동안에도 작업이 진행된다.
+      </div>
+      <div class="role-callout-body" data-show-role="staff">
+        <strong>연구원에게 핵심은 Phase 3~4 (규칙 → 운영).</strong> 일관성 보장이 본업이다. Phase 3의 AGENTS.md 규칙이 살아 있는지 매주 점검하고, Phase 4의 일일 루프가 끊기지 않게 운영한다.
+      </div>
+      <div class="role-callout-body" data-show-role="pi">
+        <strong>PI가 점검할 것은 Phase 3과 Phase 5 두 가지.</strong> 학생들이 Phase 1~2를 채운다. PI는 Phase 3의 규칙이 시대에 맞는지, Phase 5의 분석 산출물이 실제 페이퍼와 그랜트로 환산되고 있는지를 본다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TRELLIS (AGENTS.md) ===== -->
+<section id="trellis">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">03</span> · GOVERNANCE TRELLIS</div>
+      <h2 class="sec-title">머릿속 룰이 <em>한 번에</em> 글이 됐다</h2>
+      <p class="sec-sub">AGENTS.md를 4월 29일 단 한 번의 커밋으로 0줄에서 488줄로 적었다. 그 후엔 미세 조정만 있었다. 21일 동안 머리로 운영하던 룰을 한 번에 글로 옮긴 시점이다. 이날부터 사람과 Claude, Codex가 같은 페이지에서 작업을 시작한다.</p>
+    </div>
+
+    <div class="trellis">
+      <div class="trellis-chart">
+        <div class="trellis-bars">
+          <div class="tbar-col">
+            <div class="tbar" data-h="1" style="height:1%; background: oklch(0.78 0.03 80); --c: oklch(0.78 0.03 80);"><span class="tbar-val">0</span></div>
+            <div class="tbar-lab"><strong>04-08</strong>첫 커밋</div>
+          </div>
+          <div class="tbar-col">
+            <div class="tbar" data-h="2" style="height:2%; background: oklch(0.78 0.03 80); --c: oklch(0.78 0.03 80);"><span class="tbar-val">0</span></div>
+            <div class="tbar-lab"><strong>04-09</strong>덤프 끝</div>
+          </div>
+          <div class="tbar-col">
+            <div class="tbar" data-h="86" style="height:86%; --c: var(--p3);"><span class="tbar-val">488</span></div>
+            <div class="tbar-lab"><strong>04-29</strong>규칙화</div>
+          </div>
+          <div class="tbar-col">
+            <div class="tbar" data-h="100" style="height:100%; --c: var(--p2);"><span class="tbar-val">567</span></div>
+            <div class="tbar-lab"><strong>05-08</strong>현재</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="trellis-rules">
+        <h4>운영 매뉴얼의 6개 핵심 룰. 펼쳐서 읽기.</h4>
+        <div class="t-rule"><div class="rname">에이전트 부트스트랩 체크리스트</div><div class="rex">새 세션마다 4단계 강제: AGENTS.md 재독 → 매핑 문서 재독 → 이전 세션 메모리 신뢰 금지 → 표준 앵커 매핑 확인. 같은 룰을 두 번 설명하지 않는다.</div></div>
+        <div class="t-rule"><div class="rname">노트 인제스트 워크플로</div><div class="rex">로컬 파일만 사용. 웹 검색은 명시 요청 시에만. PDF → sources/ → wiki/ 순서로 생성한 뒤 노션 포스팅을 검토. 잡지식 차단.</div></div>
+        <div class="t-rule"><div class="rname">노션 페이지 배치 규칙</div><div class="rex">모든 활성 프로젝트 DB는 동일한 3종 앵커(📚 참고 논문 / 📅 미팅 노트 / 🗂 리소스)를 갖는다. 외부 페이퍼 노트는 첫 번째 앵커 하위에만 들어간다.</div></div>
+        <div class="t-rule"><div class="rname">언어 정책</div><div class="rex">노션 코멘트는 기본 한국어. 영어로 쓸 때는 외부 협력자에게 보내는 경우만, 그것도 사용자 확인 후. 영-한 중복 금지.</div></div>
+        <div class="t-rule"><div class="rname">프라이버시 가드레일</div><div class="rex">로컬 경로(/Users/..., ~/Dropbox/...)를 노션 본문에 절대 쓰지 않는다. 노션은 공유 공간, 위키는 로컬 절대경로 OK. 정반대 룰을 명시한다.</div></div>
+        <div class="t-rule"><div class="rname">단일 매핑 소스</div><div class="rex">활성 프로젝트 ↔ DB ↔ 앵커 ID 매핑은 단 한 파일(notion-grant-mapping.md)에서만 관리. 모든 에이전트가 매 세션 첫 작업 전에 다시 읽도록 강제한다.</div></div>
+      </div>
+    </div>
+
+    <div class="role-callout">
+      <div class="role-callout-head">역할별로 본 매뉴얼</div>
+      <div class="role-callout-body" data-show-role="undergrad">
+        <strong>학부생은 첫날부터 다 읽지 말 것.</strong> "에이전트 부트스트랩 체크리스트"와 "언어 정책" 두 개만 보면 시작 가능. 나머지는 일하다 막힐 때 다시 펼친다.
+      </div>
+      <div class="role-callout-body" data-show-role="grad">
+        <strong>대학원생.</strong> 매뉴얼이 부족하다고 느끼는 순간이 곧 매뉴얼에 한 줄 추가할 타이밍이다. 같은 실수를 두 번 설명하지 않게.
+      </div>
+      <div class="role-callout-body" data-show-role="staff">
+        <strong>연구원에게 이 매뉴얼은 진짜 직무 기술서다.</strong> 매주 읽고, 깨진 부분은 PR로 고친다. 매뉴얼 없는 시스템은 연구원 한 명이 휴가 가는 순간 멈춘다.
+      </div>
+      <div class="role-callout-body" data-show-role="pi">
+        <strong>PI 관점에서 매뉴얼이 567줄을 넘어 800줄, 1000줄로 가면</strong> 좋은 신호가 아니다. 그 시점엔 룰이 분야별로 분기되어 있다. 분리된 sub-AGENTS.md를 도입한다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LOOPS ===== -->
+<section id="loops">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">04</span> · RECURRING LOOPS</div>
+      <h2 class="sec-title">다섯 개의 도는 시스템</h2>
+      <p class="sec-sub">위키가 정적인 저장소에서 회전하는 시스템으로 바뀌었다. 다섯 개의 독립 루프가 각자의 주기로 계속 돈다. 한 루프가 멈춰도 다른 루프는 돈다.</p>
+    </div>
+
+    <div class="loops-grid" id="loopsGrid"></div>
+
+    <div class="role-callout">
+      <div class="role-callout-head">역할별로 매일 돌릴 루프</div>
+      <div class="role-callout-body" data-show-role="undergrad">
+        <strong>학부생이 먼저 손에 익혀야 할 건</strong> Paper Monitor 루프. 명령어 한 줄(`python scripts/paper_monitor.py`)로 시작해, 그 결과물인 monitor 리포트를 매일 5분 훑는 습관을 들인다. 이 루프 하나만 자동화돼도 분야 동향 파악이 끝난다.
+      </div>
+      <div class="role-callout-body" data-show-role="grad">
+        <strong>대학원생의 일일 루프 두 개:</strong> Ingest 루프와 Question→Backlog 루프. 매일 1~3편 ingest, 주 1회 백로그 1항목 클로즈. 이 두 루프가 페이퍼 작성 속도를 좌우한다.
+      </div>
+      <div class="role-callout-body" data-show-role="staff">
+        <strong>연구원 주간 루프는</strong> Audit·정리 루프와 Notion 포스팅 루프. 깨진 wikilink, 중복 stem, 미정렬 노션 페이지를 매주 청소한다. 이 둘이 끊기면 시스템 전체가 무너진다.
+      </div>
+      <div class="role-callout-body" data-show-role="pi">
+        <strong>PI는 Question→Backlog 루프만 본다.</strong> 매주 새로 작성된 분석 스펙 수, 클로즈된 P0 백로그 수, 누적 TSV 템플릿 수. 이 세 숫자가 그룹의 실질 생산성이다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ANATOMY ===== -->
+<section id="anatomy">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">05</span> · BACKLOG ANATOMY</div>
+      <h2 class="sec-title">분석 백로그 한 항목의 해부</h2>
+      <p class="sec-sub">이 6행 템플릿이 위키 노트를 분석 단위로 굳히는 단위다. 추상적인 연구 질문도 이 6칸을 채우면 즉시 서브에이전트에 던질 수 있는 형태가 된다.</p>
+    </div>
+
+    <div class="anatomy">
+      <div class="an-row"><div class="an-key">Goal</div><div class="an-val">한 문장으로 분석 목표 고정. <code>cohort × layer matrix를 만든다</code>처럼 결과물의 형태가 동사로 박혀야 한다.<span class="hint">"이해한다", "검토한다" 같은 모호한 동사는 결과물이 없다.</span></div></div>
+      <div class="an-row"><div class="an-key">Input</div><div class="an-val">근거 노트의 절대경로 리스트. <code>agenda/&lt;project&gt;/spec.md</code>, <code>wiki/projects/X.md</code> 형식.<span class="hint">웹 검색을 막기 위함. 에이전트가 잡지식으로 빈칸을 채우지 못하게 한다.</span></div></div>
+      <div class="an-row"><div class="an-key">Output</div><div class="an-val">생성될 파일의 경로까지 미리 지정. <code>agenda/&lt;p&gt;/2026-05-08-template.tsv</code><span class="hint">에이전트가 실행하면 정확히 그 자리에 파일이 생긴다.</span></div></div>
+      <div class="an-row"><div class="an-key">Template</div><div class="an-val">TSV 첫 줄을 그대로 박는다. <code>cohort\tcase_count\tsex\t...</code><span class="hint">컬럼 정의가 곧 분석 변수 사전. 컬럼이 없는 데이터는 "unknown"으로 표시.</span></div></div>
+      <div class="an-row"><div class="an-key">Done</div><div class="an-val">3~5개의 명시적 종료 조건. <code>모든 cohort에 1행</code>, <code>unknowns은 prose가 아닌 컬럼에</code><span class="hint">완료를 누가 봐도 같게 판정한다. "완료한 듯하다"가 사라진다.</span></div></div>
+      <div class="an-row"><div class="an-key">Prompt</div><div class="an-val">Claude/Codex에 그대로 붙일 프롬프트. 위 5개를 한 문단으로 압축.<span class="hint">한 번 작성한 프롬프트는 다른 프로젝트에서도 재사용된다. 변수만 바꿔서.</span></div></div>
+    </div>
+    <div class="tag-row">
+      <span>웹 검색 금지</span><span>로컬 파일만</span><span>unknown은 컬럼에</span><span>출력 경로 사전 지정</span><span>프롬프트 재사용</span>
+    </div>
+
+    <div class="role-callout">
+      <div class="role-callout-head">이 6행을 어떻게 쓰는가</div>
+      <div class="role-callout-body" data-show-role="undergrad">
+        <strong>학부생이 첫 분석을 시작할 때.</strong> 이 템플릿을 빈칸으로 두지 말고, 사수와 함께 6행을 채우는 30분 미팅을 먼저 잡아라. 6칸이 다 차면 그날 안에 첫 결과가 나온다.
+      </div>
+      <div class="role-callout-body" data-show-role="grad">
+        <strong>대학원생은 새 분석을 시작할 때마다 이 6행부터 적는다.</strong> 작성에 30분 걸리면 분석은 2시간이면 끝난다. 작성에 5분 걸리면 분석은 일주일 가도 안 끝난다.
+      </div>
+      <div class="role-callout-body" data-show-role="staff">
+        <strong>연구원의 일은</strong> 학생들이 작성한 6행을 PR-style로 리뷰하는 것. Goal이 동사인지, Done이 측정 가능한지, Output 경로가 다른 분석과 충돌하지 않는지를 본다.
+      </div>
+      <div class="role-callout-body" data-show-role="pi">
+        <strong>PI는 매주 작성된 6행을 5개씩 훑는다.</strong> Goal이 모호한 항목이 30%를 넘으면 그룹의 분석 속도가 떨어지고 있다는 적신호다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PLAYBOOKS ===== -->
+<section id="playbooks" style="background: linear-gradient(180deg, transparent 0%, var(--surface-alt) 100%);">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">06</span> · ROLE PLAYBOOKS</div>
+      <h2 class="sec-title">네 명의 사용자, 네 개의 시작</h2>
+      <p class="sec-sub">같은 위키를 누가 어떻게 쓰는가. 각 카드는 그 역할의 첫 30일 플레이북이다.</p>
+    </div>
+
+    <div class="playbook-grid">
+      <!-- Undergrad -->
+      <div class="playbook" style="--c: var(--role-undergrad); --c-soft: var(--p1-soft);">
+        <div class="playbook-head">
+          <div class="pb-role">학부 연구생 · ONBOARDING</div>
+          <div class="pb-title">처음 들어왔을 때</div>
+          <div class="pb-sub">목표: 30일 안에 위키를 부담이 아니라 도구로 느낀다.</div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-step"><div class="pb-step-num">1</div><div class="pb-step-text"><strong>Day 1:</strong> AGENTS.md의 "Agent Startup Checklist" 한 섹션만 읽는다. 나머지는 닫아둔다.</div></div>
+          <div class="pb-step"><div class="pb-step-num">2</div><div class="pb-step-text"><strong>Day 2~3:</strong> 사수가 지정해준 페이퍼 1편을 직접 ingest 해본다. PDF → sources/ → wiki/ 흐름을 손으로 따라간다.</div></div>
+          <div class="pb-step"><div class="pb-step-num">3</div><div class="pb-step-text"><strong>Day 4~7:</strong> paper_monitor.py를 매일 돌린다. 결과 리포트 5분 훑기를 습관화.</div></div>
+          <div class="pb-step"><div class="pb-step-num">4</div><div class="pb-step-text"><strong>Week 2:</strong> wiki/overviews/ 중 자기 도메인 1개를 정독한다. 그 안의 백링크를 따라 위키 구조를 익힌다.</div></div>
+          <div class="pb-step"><div class="pb-step-num">5</div><div class="pb-step-text"><strong>Week 3:</strong> 첫 분석 백로그를 사수와 함께 6행으로 작성. 한 번 끝까지 클로즈.</div></div>
+          <div class="pb-step"><div class="pb-step-num">6</div><div class="pb-step-text"><strong>Week 4:</strong> 미팅 노트 1개를 위키 백링크 형식으로 작성해 본다. 이게 시스템에 글을 보태는 첫 경험이다.</div></div>
+        </div>
+      </div>
+
+      <!-- Grad student -->
+      <div class="playbook" style="--c: var(--role-grad); --c-soft: var(--p2-soft);">
+        <div class="playbook-head">
+          <div class="pb-role">대학원생 · DAILY OPS</div>
+          <div class="pb-title">매일 돌리는 것</div>
+          <div class="pb-sub">목표: 위키로 페이퍼 작성 속도를 2배로.</div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-step"><div class="pb-step-num">1</div><div class="pb-step-text"><strong>Daily 09:00:</strong> paper_monitor 결과 + 신규 ingest 1~3편. 5분 안에 PDF만 추리고 본격 ingest는 점심 후.</div></div>
+          <div class="pb-step"><div class="pb-step-num">2</div><div class="pb-step-text"><strong>Daily 14:00:</strong> 진행 중 분석 백로그 1항목 30분 작업. 끝까지 안 가도 매일 진전.</div></div>
+          <div class="pb-step"><div class="pb-step-num">3</div><div class="pb-step-text"><strong>Daily 17:00:</strong> 그날 작성한 wiki 노트 → 관련 노션 프로젝트 페이지 포스팅.</div></div>
+          <div class="pb-step"><div class="pb-step-num">4</div><div class="pb-step-text"><strong>Weekly 금:</strong> 새 분석 백로그 6행 작성 1건. 다음 주 작업분 미리 예약.</div></div>
+          <div class="pb-step"><div class="pb-step-num">5</div><div class="pb-step-text"><strong>Weekly 일:</strong> 월요 미팅용 미팅 노트 초안. 그 주 wiki 변경사항을 자동 합산.</div></div>
+          <div class="pb-step"><div class="pb-step-num">6</div><div class="pb-step-text"><strong>Monthly:</strong> 자기 프로젝트의 wiki/projects/&lt;name&gt;.md 페이지 갱신 + research-question-scouting 1회.</div></div>
+        </div>
+      </div>
+
+      <!-- Research staff -->
+      <div class="playbook" style="--c: var(--role-staff); --c-soft: var(--p4-soft);">
+        <div class="playbook-head">
+          <div class="pb-role">연구원 · COORDINATION</div>
+          <div class="pb-title">팀의 일관성을 지킨다</div>
+          <div class="pb-sub">목표: 학생이 들고나도 시스템 품질이 떨어지지 않는다.</div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-step"><div class="pb-step-num">1</div><div class="pb-step-text"><strong>Daily:</strong> logs/broken-wikilinks 모니터. 깨진 링크 5분 안에 수정 또는 logs/에 블로커로 기록.</div></div>
+          <div class="pb-step"><div class="pb-step-num">2</div><div class="pb-step-text"><strong>Weekly 월:</strong> AGENTS.md vs 실제 운영 진단. 룰이 깨지고 있는 지점이 있으면 PR.</div></div>
+          <div class="pb-step"><div class="pb-step-num">3</div><div class="pb-step-text"><strong>Weekly 화:</strong> 모든 active 프로젝트 노션 DB의 3종 앵커 점검. 누락된 곳에 빈 앵커라도 만들어둔다.</div></div>
+          <div class="pb-step"><div class="pb-step-num">4</div><div class="pb-step-text"><strong>Weekly 수:</strong> 학생들이 작성한 분석 백로그 6행 PR-style 리뷰. Goal/Done이 측정 가능한지.</div></div>
+          <div class="pb-step"><div class="pb-step-num">5</div><div class="pb-step-text"><strong>Monthly:</strong> notion-grant-mapping.md 단일 소스 갱신. 새 프로젝트, 새 그랜트, 종료된 과제 정리.</div></div>
+          <div class="pb-step"><div class="pb-step-num">6</div><div class="pb-step-text"><strong>Quarterly:</strong> sub-AGENTS.md 분기 검토. 매뉴얼이 800줄 넘으면 도메인별로 쪼갠다.</div></div>
+        </div>
+      </div>
+
+      <!-- PI -->
+      <div class="playbook" style="--c: var(--role-pi); --c-soft: var(--p5-soft);">
+        <div class="playbook-head">
+          <div class="pb-role">교수 / PI · OVERSIGHT</div>
+          <div class="pb-title">시스템이 결과로 환산되는가</div>
+          <div class="pb-sub">목표: 매주 5분으로 그룹 전체 운영 상태를 본다.</div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-step"><div class="pb-step-num">1</div><div class="pb-step-text"><strong>Weekly 5분:</strong> 그 주 새로 작성된 분석 백로그 수 / 클로즈된 P0 항목 수 / 누적 TSV 템플릿 수, 세 숫자만 본다.</div></div>
+          <div class="pb-step"><div class="pb-step-num">2</div><div class="pb-step-text"><strong>Bi-weekly:</strong> research-question-scouting을 직접 1회 한다. 학생들이 놓치는 교차점이 보인다.</div></div>
+          <div class="pb-step"><div class="pb-step-num">3</div><div class="pb-step-text"><strong>Monthly:</strong> AGENTS.md 변경사항 검토. 룰이 너무 자주 바뀐다면 운영 토대가 깨지고 있다는 적신호.</div></div>
+          <div class="pb-step"><div class="pb-step-num">4</div><div class="pb-step-text"><strong>Monthly:</strong> 분석 산출물 → 페이퍼/그랜트 환산율을 본다. 5번 레이어가 정체되어 있다면 위키 작업이 외부 결과로 이어지지 못하고 있는 거다.</div></div>
+          <div class="pb-step"><div class="pb-step-num">5</div><div class="pb-step-text"><strong>Quarterly:</strong> 신규 프로젝트 초기 설정. notion-grant-mapping.md 등록 + agenda/ 폴더 + 3종 앵커를 한꺼번에 만든다.</div></div>
+          <div class="pb-step"><div class="pb-step-num">6</div><div class="pb-step-text"><strong>Annual:</strong> 시스템 자체를 다른 연구자에게 시연. 외부 시각으로 룰의 지역화/일반화 비율을 점검한다.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ADAPT ===== -->
+<section id="adapt">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">07</span> · ADAPT THIS</div>
+      <h2 class="sec-title">다른 연구실로 <em>옮길 수 있는</em> 8 원칙</h2>
+      <p class="sec-sub">생물학·신경과학에 묶인 시스템이 아니다. "1인 연구자 + 다중 AI 에이전트" 환경이면 어떤 분야에도 통한다. 8개 원칙을 자기 분야의 동사로 바꾸기만 하면 된다.</p>
+    </div>
+
+    <div class="adapt">
+      <div class="adapt-grid">
+        <div class="adapt-card"><div class="adapt-num">01</div><div class="adapt-title">단일 운영 매뉴얼</div><div class="adapt-body">에이전트마다 다른 룰을 주지 마라. 폴더 루트의 <code>AGENTS.md</code> 하나로 모든 에이전트가 같은 시작점을 공유한다.</div></div>
+        <div class="adapt-card"><div class="adapt-num">02</div><div class="adapt-title">단일 매핑 소스</div><div class="adapt-body">프로젝트 ↔ DB ↔ 앵커 ID 매핑은 단 한 파일에만. 모든 에이전트가 매 세션 처음에 그 파일을 다시 읽게 한다.</div></div>
+        <div class="adapt-card"><div class="adapt-num">03</div><div class="adapt-title">메모리 누적 가드레일</div><div class="adapt-body">"이런 식으로 쓰지 마"가 반복되면 즉시 메모리에 박는다. 같은 교정을 두 번 시키지 않는다.</div></div>
+        <div class="adapt-card"><div class="adapt-num">04</div><div class="adapt-title">덤프 → 분류 → 운영 → 분석</div><div class="adapt-body">처음부터 분석 시스템을 만들려 하지 마라. 먼저 덤프하고 분류한다. 운영이 자리 잡은 다음에야 분석이 나온다.</div></div>
+        <div class="adapt-card"><div class="adapt-num">05</div><div class="adapt-title">출력 경로 사전 지정</div><div class="adapt-body">에이전트에게 일을 시킬 땐 "어디에 무엇을" 둘지 미리 박는다. 사후 정리는 늘 비싸다.</div></div>
+        <div class="adapt-card"><div class="adapt-num">06</div><div class="adapt-title">노트 끝에 다음 작업을 박는다</div><div class="adapt-body">위키 페이지 끝에 "다음 분석에 필요한 컬럼"을 미리 적어둔다. 그 한 줄을 그대로 다음 작업의 백로그로 옮길 수 있다.</div></div>
+        <div class="adapt-card"><div class="adapt-num">07</div><div class="adapt-title">웹 검색 차단의 가치</div><div class="adapt-body">로컬 파일만 사용하도록 명시하면 에이전트가 잡지식으로 빈칸을 메우지 못한다. unknown은 prose가 아니라 컬럼에.</div></div>
+        <div class="adapt-card"><div class="adapt-num">08</div><div class="adapt-title">일일 모니터의 누적 가치</div><div class="adapt-body">매일 도는 1101줄짜리 모니터 스크립트가 30일 누적되면, 그 자체가 분야 동향 데이터셋이 된다.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== §08 WORKFLOWS — 실제 사용 사례 ===== -->
+<section class="setup-section" id="workflows">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">08</span> · REAL WORKFLOWS</div>
+      <h2 class="sec-title">이렇게 <em>씁니다</em></h2>
+      <p class="sec-sub">
+        터미널이나 코드는 거의 안 만집니다. 채팅창에 한두 줄 던지면 끝나는 일들. 첫 셋업은 맨 위 "나도 이거 세팅해줘" gist 한 번이면 충분하고, 그 이후의 일상은 아래 다섯 시나리오에 가깝습니다.
+      </p>
+    </div>
+
+    <div class="workflows">
+      <!-- WORKFLOW 1 — PI -->
+      <div class="wf-card" style="--c: var(--p5); --c-soft: var(--p5-soft);">
+        <div class="wf-role">PI · 월요일 아침</div>
+        <div class="wf-situation">학생 6명 주간 피드백 초안</div>
+        <div class="wf-context">
+          학생들의 주간 노션 노트와 그 사이에 위키에 쌓인 새 노트가 한 검색 표면 위에 있습니다. 미팅 전 5분이면 학생별 1페이지 코멘트 초안이 나옵니다.
+        </div>
+        <div class="wf-systems">
+          <span class="wf-chip" style="--cc: var(--p4);">Notion</span>
+          <span class="wf-chip" style="--cc: var(--p2);">llm-wiki</span>
+          <span class="wf-chip" style="--cc: var(--p5);">Claude</span>
+        </div>
+        <div class="wf-prompt-label">던지는 한 마디</div>
+        <div class="wf-prompt">지난주 이후 노션의 학생 주간 노트랑 그 사이 위키에 새로 쌓인 노트 같이 보고, 학생별 1페이지 피드백 초안 써줘</div>
+        <div class="wf-out">
+          <strong>산출</strong>
+          학생 6명 × 1페이지 피드백 draft. 미팅 들어가면서 한 번 훑고 코멘트만 손보면 끝.
+        </div>
+      </div>
+
+      <!-- WORKFLOW 2 — 대학원생 -->
+      <div class="wf-card" style="--c: var(--p2); --c-soft: var(--p2-soft);">
+        <div class="wf-role">대학원생 · 미팅 전날</div>
+        <div class="wf-situation">공동연구자에게 보낼 미팅 자료</div>
+        <div class="wf-context">
+          위키에서 관련 노트를 추리고 → 노션에 미팅 페이지를 만들고 → Gmail로 메일 초안까지. 셋이 한 흐름으로 30분 안에 정리됩니다.
+        </div>
+        <div class="wf-systems">
+          <span class="wf-chip" style="--cc: var(--p2);">llm-wiki</span>
+          <span class="wf-chip" style="--cc: var(--p4);">Notion</span>
+          <span class="wf-chip" style="--cc: var(--p3);">Gmail</span>
+        </div>
+        <div class="wf-prompt-label">던지는 한 마디</div>
+        <div class="wf-prompt">위키에서 X 주제 관련 노트 5개 추려서 미팅용 1페이지 요약 만들어줘. 노션에 내일 미팅 페이지 만들어서 거기 넣고, Gmail로 공동연구자한테 메일 초안까지</div>
+        <div class="wf-out">
+          <strong>산출</strong>
+          노션 미팅 페이지 + 발송 대기 중인 메일 초안 + 첨부 자료까지 한 묶음.
+        </div>
+      </div>
+
+      <!-- WORKFLOW 3 — 대학원생 manuscript -->
+      <div class="wf-card" style="--c: var(--p1); --c-soft: var(--p1-soft);">
+        <div class="wf-role">대학원생 · 본인 논문</div>
+        <div class="wf-situation">초고 한 챕터에 위키 비교 피드백</div>
+        <div class="wf-context">
+          쓰던 manuscript 한 챕터를 위키의 최신 결과와 대조시킵니다. 인용이 빠진 곳, 결과가 충돌하는 곳, 새 결과를 반영해야 할 곳을 찾아냅니다.
+        </div>
+        <div class="wf-systems">
+          <span class="wf-chip" style="--cc: var(--p1);">manuscript</span>
+          <span class="wf-chip" style="--cc: var(--p2);">llm-wiki</span>
+          <span class="wf-chip" style="--cc: var(--p5);">Claude</span>
+        </div>
+        <div class="wf-prompt-label">던지는 한 마디</div>
+        <div class="wf-prompt">이 챕터 읽고, 위키의 최신 노트랑 비교해서 인용 누락·결과 충돌·반영 필요한 부분 찾아줘. 트랙 체인지로 표시해주고</div>
+        <div class="wf-out">
+          <strong>산출</strong>
+          코멘트와 추적 변경이 들어간 docx + 인용 누락 리스트 + 수정 권고.
+        </div>
+      </div>
+
+      <!-- WORKFLOW 4 — 연구원 -->
+      <div class="wf-card" style="--c: var(--p4); --c-soft: var(--p4-soft);">
+        <div class="wf-role">연구원 · 협업 시작</div>
+        <div class="wf-situation">새 협력자에게 프로젝트 자료 한 번에 전달</div>
+        <div class="wf-context">
+          위키의 관련 노트 묶음을 노션 협업 페이지로 옮기고, Slack 채널에 링크를 공지하면 새 협력자가 같은 시점부터 프로젝트에 합류할 수 있습니다.
+        </div>
+        <div class="wf-systems">
+          <span class="wf-chip" style="--cc: var(--p2);">llm-wiki</span>
+          <span class="wf-chip" style="--cc: var(--p4);">Notion</span>
+          <span class="wf-chip" style="--cc: var(--p2);">Slack</span>
+        </div>
+        <div class="wf-prompt-label">던지는 한 마디</div>
+        <div class="wf-prompt">PROJECT-α 관련 위키 노트 전부 노션 협업자용 페이지로 옮겨주고, #lab-collab 채널에 페이지 링크랑 한 단락 요약 같이 올려줘</div>
+        <div class="wf-out">
+          <strong>산출</strong>
+          노션 협업 페이지 + Slack 공지 + 새 협력자가 30분 안에 합류 가능한 상태.
+        </div>
+      </div>
+
+      <!-- WORKFLOW 5 — 학부생 -->
+      <div class="wf-card" style="--c: var(--p3); --c-soft: var(--p3-soft);">
+        <div class="wf-role">학부생 · 매일 저녁</div>
+        <div class="wf-situation">사수에게 일일 페이퍼 보고</div>
+        <div class="wf-context">
+          오늘 위키에 ingest한 페이퍼들을 한 줄씩 요약해서 Slack으로 사수에게 보냅니다. 매일 5분, 사수도 학부생도 부담 없는 일일 동기화.
+        </div>
+        <div class="wf-systems">
+          <span class="wf-chip" style="--cc: var(--p2);">llm-wiki</span>
+          <span class="wf-chip" style="--cc: var(--p2);">Slack</span>
+        </div>
+        <div class="wf-prompt-label">던지는 한 마디</div>
+        <div class="wf-prompt">오늘 ingest한 페이퍼 5편 한 줄씩 요약해서 Slack DM으로 사수한테 보내줘</div>
+        <div class="wf-out">
+          <strong>산출</strong>
+          사수 Slack DM에 5줄 요약 + 위키 백링크. 학부생 → 사수 일일 동기화 자동화.
+        </div>
+      </div>
+    </div>
+
+    <div class="wf-bottom-note">
+      <strong>처음 시작은?</strong> 페이지 맨 위에 적어둔 3단계 — gist 링크 복사해서 채팅창에 붙이고 "나도 이거 세팅해줘" 한 마디. 위 워크플로우들은 그 셋업 이후의 일상입니다. 터미널이나 명령어를 직접 치는 일은 거의 없습니다.
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h5>관찰 데이터</h5>
+        2026-04-08 → 2026-05-08 (31일)<br>
+        git log · AGENTS.md · agenda/ · scripts/<br>
+        프로젝트 이름 익명화 처리됨
+      </div>
+      <div>
+        <h5>설계 영감</h5>
+        OKLCH 색공간 — 지각적으로 균등<br>
+        garden-skills (ConardLi)의 web-design-engineer<br>
+        avoiding the purple-pink-blue gradient cliché
+      </div>
+      <div>
+        <h5>역할별 시작점</h5>
+        학부생 · §08 학부생 워크플로 + §02 Phase 1~2<br>
+        대학원생 · §08 미팅·manuscript 워크플로<br>
+        연구원 · §08 협업 워크플로 + §03 Trellis<br>
+        PI · §08 학생 피드백 워크플로 + §07 Adapt
+      </div>
+    </div>
+    <div style="border-top: 1px solid var(--ink-line); padding-top: 1.25rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <span>Compounding Wiki — 2026-05-08 스냅샷</span>
+      <span><a href="../index.html">← 인터랙티브 인덱스</a></span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /shell -->
+
+<script>
+/* ============================
+   ROLE SWITCHER
+   ============================ */
+const rolePills = document.querySelectorAll('#rolePills .role-pill');
+rolePills.forEach(pill => {
+  pill.addEventListener('click', () => {
+    const role = pill.dataset.role;
+    document.body.dataset.role = role;
+    rolePills.forEach(p => p.setAttribute('aria-pressed', p === pill ? 'true' : 'false'));
+  });
+});
+
+/* ============================
+   KNOWLEDGE CHAIN (§00)
+   ============================ */
+const chainStages = [
+  {
+    id: 1, label: '원문', en: 'Original',
+    folder: 'papers/',
+    color: 'oklch(0.62 0.14 48)',
+    soft: 'var(--p1-soft)',
+    body: '연구실의 모든 추론이 출발하는 바닥. PDF 자체는 검색이 어렵지만 <strong>정확한 인용</strong>과 figure 재참조의 단일 소스다. PDF 원본이 없으면 위 단계는 출처 없는 추론으로 빠진다.',
+    uses: '학부 / 대학원 / 연구원 / PI 모두',
+    count: '3,398 PDF'
+  },
+  {
+    id: 2, label: '요약', en: 'LLM Summary',
+    folder: 'sources/',
+    color: 'oklch(0.66 0.16 85)',
+    soft: 'var(--p3-soft)',
+    body: 'LLM이 PDF를 읽고 만든 <strong>마크다운 요약</strong>. 페이퍼 1편 = 노트 1개. 빠르게 훑기에 최적화되어 있고, 검색 가능하며, 인용 가능하다. 위키 노트를 만들 때의 1차 입력.',
+    uses: '학부 (정독 전 훑기) / 대학원 (인용 풀)',
+    count: '3,369 요약'
+  },
+  {
+    id: 3, label: '위키', en: 'Structured Note',
+    folder: 'wiki/<category>/',
+    color: 'oklch(0.56 0.13 148)',
+    soft: 'var(--p2-soft)',
+    body: '카테고리·frontmatter·백링크가 박힌 <strong>구조화된 노트</strong>. 한 페이퍼가 여러 위키 페이지에서 참조되고, 한 위키 페이지가 여러 페이퍼를 합친다. 재사용 가능한 지식 원자.',
+    uses: '대학원 (논문 쓰기) / 연구원 (감사)',
+    count: '3,955 노트 / 38 카테고리'
+  },
+  {
+    id: 4, label: '종합', en: 'Synthesis',
+    folder: 'wiki/overviews/',
+    color: 'oklch(0.50 0.09 200)',
+    soft: 'var(--p5-soft)',
+    body: '여러 페이퍼·여러 위키 노트를 한 viewpoint로 묶은 <strong>도메인 통합 페이지</strong>. "이 분야의 현재 지도"를 들여다볼 때 첫 페이지. overview 1개에 30~80개의 백링크가 들어 있다.',
+    uses: '대학원 / 연구원 / PI (현장 파악)',
+    count: '341 overview'
+  },
+  {
+    id: 5, label: '스펙', en: 'Analysis Spec',
+    folder: 'agenda/<project>/',
+    color: 'oklch(0.48 0.14 320)',
+    soft: 'var(--p4-soft)',
+    body: 'Goal·Input·Output·Done·Template·Prompt 6행으로 잠긴 <strong>분석 작업 단위</strong>. 위키를 읽기만 하지 않고 "위키에서 다음 작업을 끌어낸" 결과물. 서브에이전트에 그대로 던질 수 있는 형태.',
+    uses: '대학원 (직접 작성) / 연구원 (PR 리뷰) / PI (전략)',
+    count: '4 프로젝트 × spec + TSV'
+  },
+  {
+    id: 6, label: '결과', en: 'Research Output',
+    folder: '(외부)',
+    color: 'oklch(0.30 0.04 245)',
+    soft: 'oklch(0.94 0.02 245)',
+    body: '페이퍼·그랜트·발표·코드. <strong>이 모든 시스템이 존재하는 이유</strong>. 5번 레이어가 자라지 않으면 위 네 단계가 결과로 환산되지 못하고 있는 거다. PI가 지켜봐야 할 핵심 출력 지표.',
+    uses: 'PI (KPI) / 대학원 (졸업)',
+    count: '진행 중'
+  }
+];
+
+// Render chain SVG
+const chainNodes = document.getElementById('chainNodes');
+const chainLabels = document.getElementById('chainLabels');
+const chainW = 1100, chainH = 220;
+const chainPad = 90;
+const chainStep = (chainW - chainPad * 2) / (chainStages.length - 1);
+
+chainStages.forEach((s, i) => {
+  const cx = chainPad + i * chainStep;
+  const cy = 110;
+
+  // Connector arrow (between this and prev)
+  if (i > 0) {
+    const prevX = chainPad + (i - 1) * chainStep;
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    arrow.setAttribute('x1', prevX + 36);
+    arrow.setAttribute('x2', cx - 38);
+    arrow.setAttribute('y1', cy);
+    arrow.setAttribute('y2', cy);
+    arrow.setAttribute('stroke', s.color);
+    arrow.setAttribute('stroke-width', '2');
+    arrow.setAttribute('marker-end', 'url(#arrowHead)');
+    arrow.setAttribute('opacity', '0.7');
+    chainNodes.appendChild(arrow);
+  }
+
+  // Glow halo
+  const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  halo.setAttribute('cx', cx);
+  halo.setAttribute('cy', cy);
+  halo.setAttribute('r', 36);
+  halo.setAttribute('fill', s.color);
+  halo.setAttribute('opacity', '0.12');
+  halo.setAttribute('filter', 'url(#chainGlow)');
+  chainNodes.appendChild(halo);
+
+  // Outer ring
+  const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  ring.setAttribute('cx', cx);
+  ring.setAttribute('cy', cy);
+  ring.setAttribute('r', 30);
+  ring.setAttribute('fill', 'oklch(0.985 0.012 88)');
+  ring.setAttribute('stroke', s.color);
+  ring.setAttribute('stroke-width', '2');
+  chainNodes.appendChild(ring);
+
+  // Inner dot
+  const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dot.setAttribute('cx', cx);
+  dot.setAttribute('cy', cy);
+  dot.setAttribute('r', 18);
+  dot.setAttribute('fill', s.color);
+  dot.setAttribute('class', 'chain-node');
+  dot.dataset.idx = i;
+  dot.style.cursor = 'pointer';
+  dot.style.transition = 'r 0.2s';
+  chainNodes.appendChild(dot);
+
+  // Stage number inside
+  const num = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  num.setAttribute('x', cx);
+  num.setAttribute('y', cy + 5);
+  num.setAttribute('text-anchor', 'middle');
+  num.setAttribute('font-family', 'JetBrains Mono, monospace');
+  num.setAttribute('font-size', '14');
+  num.setAttribute('font-weight', '600');
+  num.setAttribute('fill', 'oklch(0.985 0.012 88)');
+  num.style.pointerEvents = 'none';
+  num.textContent = s.id;
+  chainNodes.appendChild(num);
+
+  // Label below
+  const lab = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  lab.setAttribute('x', cx);
+  lab.setAttribute('y', cy + 60);
+  lab.setAttribute('text-anchor', 'middle');
+  lab.setAttribute('font-family', 'Newsreader, serif');
+  lab.setAttribute('font-size', '20');
+  lab.setAttribute('font-weight', '500');
+  lab.setAttribute('fill', 'oklch(0.18 0.03 245)');
+  lab.textContent = s.label;
+  chainLabels.appendChild(lab);
+
+  // English label
+  const en = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  en.setAttribute('x', cx);
+  en.setAttribute('y', cy + 78);
+  en.setAttribute('text-anchor', 'middle');
+  en.setAttribute('font-family', 'JetBrains Mono, monospace');
+  en.setAttribute('font-size', '10');
+  en.setAttribute('font-weight', '500');
+  en.setAttribute('fill', 'oklch(0.55 0.02 245)');
+  en.setAttribute('letter-spacing', '0.08em');
+  en.textContent = s.en.toUpperCase();
+  chainLabels.appendChild(en);
+
+  // Folder above
+  const fol = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  fol.setAttribute('x', cx);
+  fol.setAttribute('y', cy - 50);
+  fol.setAttribute('text-anchor', 'middle');
+  fol.setAttribute('font-family', 'JetBrains Mono, monospace');
+  fol.setAttribute('font-size', '11');
+  fol.setAttribute('fill', s.color);
+  fol.textContent = s.folder;
+  chainLabels.appendChild(fol);
+
+  // Count above folder
+  const cnt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  cnt.setAttribute('x', cx);
+  cnt.setAttribute('y', cy - 65);
+  cnt.setAttribute('text-anchor', 'middle');
+  cnt.setAttribute('font-family', 'JetBrains Mono, monospace');
+  cnt.setAttribute('font-size', '9');
+  cnt.setAttribute('fill', 'oklch(0.55 0.02 245)');
+  cnt.setAttribute('letter-spacing', '0.04em');
+  cnt.textContent = s.count;
+  chainLabels.appendChild(cnt);
+
+  // Click handler on dot
+  dot.addEventListener('click', () => renderChainStage(i));
+  dot.addEventListener('mouseenter', () => dot.setAttribute('r', '21'));
+  dot.addEventListener('mouseleave', () => dot.setAttribute('r', '18'));
+});
+
+const chainDetail = document.getElementById('chainDetail');
+function renderChainStage(i) {
+  const s = chainStages[i];
+  chainDetail.style.setProperty('--c', s.color);
+  chainDetail.style.setProperty('--c-soft', s.soft);
+  chainDetail.innerHTML = `
+    <div>
+      <div class="cd-stage">STAGE ${String(s.id).padStart(2,'0')} · ${s.en}</div>
+      <div class="cd-name">${s.label}</div>
+      <div class="cd-folder">${s.folder}</div>
+    </div>
+    <div>
+      <div class="cd-body">${s.body}</div>
+      <div class="cd-uses">주 사용: <strong>${s.uses}</strong></div>
+    </div>
+  `;
+  // Highlight selected node
+  document.querySelectorAll('.chain-node').forEach((n, k) => {
+    n.setAttribute('stroke', k === i ? 'oklch(0.18 0.03 245)' : 'none');
+    n.setAttribute('stroke-width', k === i ? '2.5' : '0');
+  });
+}
+renderChainStage(0);
+
+/* ============================
+   COMPOUNDING STREAM CHART
+   ============================ */
+// [papers, structure, rules, loops, specs] for each day from Apr 8
+const flowData = [
+  [2,1,0,0,0],     // 0  04-08
+  [4,1,0,0,0],     // 1  04-09
+  [18,3,0,1,0],    // 2  04-10
+  [38,5,0,1,0],    // 3  04-11
+  [55,7,0,2,0],    // 4  04-12
+  [62,8,0,2,0],    // 5  04-13
+  [66,10,0,2,0],   // 6  04-14
+  [70,11,0,2,0],   // 7
+  [74,12,0,2,0],   // 8
+  [76,13,0,2,0],   // 9
+  [78,14,0,2,0],   // 10
+  [80,15,0,2,0],   // 11
+  [82,16,0,3,0],   // 12
+  [84,18,0,3,0],   // 13 04-21
+  [86,19,0,3,0],   // 14
+  [87,21,0,3,0],   // 15
+  [88,24,0,3,0],   // 16
+  [89,28,0,3,0],   // 17
+  [90,38,0,4,0],   // 18 04-26 reorg
+  [91,40,0,4,0],   // 19
+  [92,42,0,4,0],   // 20
+  [93,43,72,5,0],  // 21 04-29 AGENTS.md jump
+  [93,44,76,8,0],  // 22
+  [94,45,78,10,0], // 23
+  [95,46,80,18,0], // 24 05-02
+  [95,46,82,28,0], // 25 05-03
+  [96,47,84,34,0], // 26 05-04
+  [96,47,85,42,0], // 27 05-05
+  [97,48,87,52,0], // 28 05-06
+  [97,49,89,58,0], // 29 05-07
+  [98,50,92,62,76] // 30 05-08
+];
+const layerLabels = ['Papers · sources', '구조 · overviews', 'AGENTS.md 룰', '일일 운영 루프', '분석 스펙 · TSV'];
+const layerColors = [
+  'var(--p1)', 'var(--p2)', 'var(--p3)', 'var(--p4)', 'var(--p5)'
+];
+const layerColorOklch = [
+  'oklch(0.62 0.14 48)',
+  'oklch(0.56 0.13 148)',
+  'oklch(0.66 0.16 85)',
+  'oklch(0.48 0.14 320)',
+  'oklch(0.50 0.09 200)'
+];
+const flowEvents = {
+  0: { date: '04-08', event: '첫 커밋. papers/sources/wiki 3폴더로 시작.' },
+  1: { date: '04-09', event: '491편 + 12 overview 추가. 덤프 시작.' },
+  4: { date: '04-12', event: '2,435개 파일 업데이트. 코퍼스 1차 완성.' },
+  6: { date: '04-14', event: '꾸준한 ingest 구간 진입.' },
+  13: { date: '04-21', event: '~1,200편 추가. overview 재구조화.' },
+  18: { date: '04-26', event: 'neuroscience 카테고리 세분화. mouse-line/history tree 신설.' },
+  21: { date: '04-29', event: 'AGENTS.md 488줄 한 번에 등장. 룰의 글화.' },
+  24: { date: '05-02', event: '일일 paper monitor 정착. 노션 배치 시작.' },
+  27: { date: '05-05', event: '운영 루프 안정. 매일 10~30편 ingest.' },
+  30: { date: '05-08', event: '위키에서 분석 작업물 등장. 4 프로젝트 spec + TSV 동시 생성.' }
+};
+
+// Stack data
+const W = 1000, H = 380, mL = 50, mR = 30, mT = 30, mB = 40;
+const chartW = W - mL - mR;
+const chartH = H - mT - mB;
+const days = flowData.length;
+
+// Find max stacked total
+let maxTotal = 0;
+flowData.forEach(d => { const s = d.reduce((a,b)=>a+b, 0); if (s > maxTotal) maxTotal = s; });
+
+const xScale = i => mL + (i / (days - 1)) * chartW;
+const yScale = v => mT + chartH - (v / maxTotal) * chartH;
+
+// Build stacked layers
+const stacked = []; // for each layer, array of {x, yTop, yBot}
+for (let l = 0; l < 5; l++) {
+  const series = [];
+  for (let i = 0; i < days; i++) {
+    let bot = 0;
+    for (let k = 0; k < l; k++) bot += flowData[i][k];
+    const top = bot + flowData[i][l];
+    series.push({ x: xScale(i), yBot: yScale(bot), yTop: yScale(top) });
+  }
+  stacked.push(series);
+}
+
+// Catmull-Rom to bezier path for smooth curves
+function smoothPath(points, getY) {
+  if (points.length < 2) return '';
+  let d = `M ${points[0].x} ${getY(points[0])}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] || points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] || points[i + 1];
+    const y0 = getY(p0), y1 = getY(p1), y2 = getY(p2), y3 = getY(p3);
+    const cp1x = p1.x + (p2.x - p0.x) / 6;
+    const cp1y = y1 + (y2 - y0) / 6;
+    const cp2x = p2.x - (p3.x - p1.x) / 6;
+    const cp2y = y2 - (y3 - y1) / 6;
+    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${y2}`;
+  }
+  return d;
+}
+
+const layersGroup = document.getElementById('flowLayers');
+for (let l = 0; l < 5; l++) {
+  const series = stacked[l];
+  const topPath = smoothPath(series, p => p.yTop);
+  const botRev = [...series].reverse();
+  const botPath = smoothPath(botRev, p => p.yBot);
+  const fullPath = topPath + ' L ' + botRev[0].x + ' ' + botRev[0].yBot + ' ' + botPath.replace(/^M/, 'L') + ' Z';
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', fullPath);
+  path.setAttribute('fill', layerColorOklch[l]);
+  path.setAttribute('opacity', '0.85');
+  path.setAttribute('filter', 'url(#liquidBlur)');
+  path.dataset.layer = l;
+  path.style.transition = 'opacity 0.3s';
+  layersGroup.appendChild(path);
+}
+
+// Markers for key events
+const markersGroup = document.getElementById('flowMarkers');
+Object.entries(flowEvents).forEach(([i, ev]) => {
+  const idx = parseInt(i, 10);
+  const x = xScale(idx);
+  const total = flowData[idx].reduce((a,b)=>a+b, 0);
+  const y = yScale(total);
+  // line
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  line.setAttribute('x1', x);
+  line.setAttribute('x2', x);
+  line.setAttribute('y1', y - 6);
+  line.setAttribute('y2', mT - 5);
+  line.setAttribute('stroke', 'oklch(0.18 0.03 245)');
+  line.setAttribute('stroke-width', '0.7');
+  line.setAttribute('stroke-dasharray', '2 2');
+  line.setAttribute('opacity', '0.4');
+  markersGroup.appendChild(line);
+  // dot
+  const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dot.setAttribute('cx', x);
+  dot.setAttribute('cy', mT - 5);
+  dot.setAttribute('r', '3');
+  dot.setAttribute('fill', 'oklch(0.18 0.03 245)');
+  markersGroup.appendChild(dot);
+  // label
+  if ([1, 4, 13, 18, 21, 24, 30].includes(idx)) {
+    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('x', x);
+    txt.setAttribute('y', mT - 12);
+    txt.setAttribute('text-anchor', 'middle');
+    txt.setAttribute('font-family', 'JetBrains Mono, monospace');
+    txt.setAttribute('font-size', '9');
+    txt.setAttribute('fill', 'oklch(0.36 0.025 245)');
+    txt.textContent = ev.date;
+    markersGroup.appendChild(txt);
+  }
+});
+
+// Legend
+const flowLegend = document.getElementById('flowLegend');
+layerLabels.forEach((label, i) => {
+  const leg = document.createElement('div');
+  leg.className = 'flow-leg';
+  leg.dataset.layer = i;
+  leg.innerHTML = `<span class="swatch" style="--c: ${layerColorOklch[i]}; background: ${layerColorOklch[i]};"></span><strong>${label}</strong>`;
+  leg.addEventListener('click', () => {
+    leg.classList.toggle('dimmed');
+    const path = layersGroup.querySelector(`[data-layer="${i}"]`);
+    if (path) path.style.opacity = leg.classList.contains('dimmed') ? '0.15' : '0.85';
+  });
+  flowLegend.appendChild(leg);
+});
+
+// Hover/SVG references — declared early because tick group + hover handlers use them
+const flowSvg = document.getElementById('flowSvg');
+const flowTip = document.getElementById('flowTip');
+const flowHover = document.getElementById('flowHover');
+
+// Daily x-axis ticks on the SVG itself
+const tickGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+for (let i = 0; i < days; i++) {
+  const x = xScale(i);
+  const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  tick.setAttribute('x1', x);
+  tick.setAttribute('x2', x);
+  tick.setAttribute('y1', 340);
+  tick.setAttribute('y2', i % 7 === 0 ? 348 : 344);
+  tick.setAttribute('stroke', 'oklch(0.40 0.04 245)');
+  tick.setAttribute('stroke-width', i % 7 === 0 ? 1 : 0.5);
+  tick.setAttribute('opacity', i % 7 === 0 ? 0.7 : 0.35);
+  tickGroup.appendChild(tick);
+}
+flowSvg.appendChild(tickGroup);
+
+// X axis labels — every 7 days
+const flowAxis = document.getElementById('flowAxis');
+const dateAtIdx = (i) => {
+  const start = new Date(2026, 3, 8);
+  const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+  return `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+[0, 7, 14, 21, 28, 30].forEach(i => {
+  const span = document.createElement('span');
+  span.textContent = dateAtIdx(i);
+  span.style.flex = '0 0 auto';
+  span.style.fontWeight = i === 30 ? '600' : '400';
+  span.style.color = i === 30 ? 'var(--ink)' : 'var(--ink-muted)';
+  flowAxis.appendChild(span);
+});
+
+// Hover interaction (flowSvg/flowTip/flowHover already declared above)
+flowSvg.addEventListener('mousemove', (e) => {
+  const rect = flowSvg.getBoundingClientRect();
+  const xPct = (e.clientX - rect.left) / rect.width;
+  const xVB = xPct * W;
+  if (xVB < mL || xVB > W - mR) {
+    flowTip.classList.remove('visible');
+    flowHover.setAttribute('opacity', '0');
+    return;
+  }
+  const dayIdx = Math.round((xVB - mL) / chartW * (days - 1));
+  const x = xScale(dayIdx);
+  flowHover.setAttribute('x1', x);
+  flowHover.setAttribute('x2', x);
+  flowHover.setAttribute('opacity', '0.3');
+
+  const d = flowData[dayIdx];
+  const ev = flowEvents[dayIdx];
+  const dateLabel = ev ? ev.date : `Day ${dayIdx + 1}`;
+  let html = `<div class="tip-date">${dateLabel}</div>`;
+  layerLabels.forEach((lab, k) => {
+    html += `<div class="tip-row"><span class="lab">${lab}</span><span>${d[k]}</span></div>`;
+  });
+  if (ev) html += `<div class="tip-event">${ev.event}</div>`;
+  flowTip.innerHTML = html;
+  flowTip.classList.add('visible');
+
+  const tipX = (x / W) * rect.width + 14;
+  const tipY = e.clientY - rect.top - 20;
+  flowTip.style.left = Math.min(tipX, rect.width - 240) + 'px';
+  flowTip.style.top = tipY + 'px';
+});
+flowSvg.addEventListener('mouseleave', () => {
+  flowTip.classList.remove('visible');
+  flowHover.setAttribute('opacity', '0');
+});
+
+/* ============================
+   DAILY LEDGER — 31일치 진짜 데이터
+   files = 그날 modified 파일 수 (find -newermt 측정)
+   ============================ */
+const dailyLog = [
+  { date: '04-08', dow: '수', files: 5,    phase: 1, star: true,  headline: 'Initial commit', body: 'papers/sources/wiki 3폴더로 시작. AGENTS.md 0줄, agenda/ 없음. 룰은 머릿속에만.' },
+  { date: '04-09', dow: '목', files: 2,    phase: 1, star: false, headline: 'CLAUDE.md cleanup, sources sync', body: '첫 monitor report. YAML 수정. 잔잔한 셋업의 둘째 날.' },
+  { date: '04-10', dow: '금', files: 3,    phase: 1, star: false, headline: 'Monitor 두 번째', body: '일일 monitor report 누적 시작. 코퍼스 정리 작업.' },
+  { date: '04-11', dow: '토', files: 2,    phase: 1, star: false, headline: '50+ 페이퍼, 12 overview', body: '이전에 정리한 위키 노트의 디테일 보강. 도메인 overview 갱신. 비-cortical 뇌영역 페이지 12개 신설.' },
+  { date: '04-12', dow: '일', files: 36,   phase: 1, star: true,  headline: '491편 + 2,435파일 ★', body: '대량 ingest. 1차 코퍼스 완성. 미디어 파일까지 한꺼번에 업데이트되며 그날의 변경 파일이 36개로 점프.' },
+  { date: '04-13', dow: '월', files: 0,    phase: 2, star: false, headline: '커밋 없음 · monitor만', body: '파일 변경 0. monitor report만 누적. monitor 스크립트만 돌고 사람 손은 안 간 첫 날.' },
+  { date: '04-14', dow: '화', files: 1,    phase: 2, star: false, headline: '~130편 점진적 ingest', body: 'Add ~130 new papers commit. 분류 단계로 진입.' },
+  { date: '04-15', dow: '수', files: 1,    phase: 2, star: false, headline: 'Monitor', body: 'monitor report. 가벼운 활동.' },
+  { date: '04-16', dow: '목', files: 5,    phase: 2, star: false, headline: '~100편 + gut-microbiome 재정리', body: 'Add ~100 new papers. gut-microbiome과 ASO 카테고리 재정리 시작.' },
+  { date: '04-17', dow: '금', files: 0,    phase: 2, star: false, headline: '휴지일', body: '활동 없음. 시스템이 멈춰도 데이터는 안 사라진다.' },
+  { date: '04-18', dow: '토', files: 4,    phase: 2, star: false, headline: 'ACMG-AMP feedback agenda', body: '첫 agenda 노트 작성. agenda/ 폴더가 의미를 갖기 시작.' },
+  { date: '04-19', dow: '일', files: 7,    phase: 2, star: false, headline: '점진적 ingest', body: '소규모 추가. 일요일에도 시스템은 천천히 자란다.' },
+  { date: '04-20', dow: '월', files: 11,   phase: 2, star: false, headline: '점진적 ingest', body: '소규모 추가. 매일이 균질해 보이지만 누적되고 있다.' },
+  { date: '04-21', dow: '화', files: 2,    phase: 2, star: true,  headline: '~1,200편 대량 확장 ★', body: 'Massive wiki expansion + overview reorganization. 변경 파일 수는 2개지만 commit 자체에 1,200편 신규가 박힘.' },
+  { date: '04-22', dow: '수', files: 3,    phase: 2, star: false, headline: 'Monitor', body: 'monitor report. 가벼운 정리.' },
+  { date: '04-23', dow: '목', files: 4,    phase: 2, star: false, headline: '점진적', body: '소규모 활동. 다음 날 대규모 재구조화의 직전.' },
+  { date: '04-24', dow: '금', files: 42,   phase: 2, star: false, headline: 'Audit 시작', body: 'broken-wikilinks, duplicate-source-title-triage, metadata-blockers — 세 audit 로그가 한 날에 쓰임. 품질 점검 페이즈.' },
+  { date: '04-25', dow: '토', files: 71,   phase: 2, star: false, headline: 'Audit 심화', body: '품질 점검 작업 지속. 다음 날 대규모 재구조화의 준비 단계.' },
+  { date: '04-26', dow: '일', files: 6183, phase: 2, star: true,  headline: '대규모 재구조화 ★', body: 'neuroscience를 granular 카테고리로 분할. mouse-line/history tree 신설. ASD mouse corpus 정리. 그날 파일 6,183개가 움직였다. 31일 중 가장 큰 스파이크.' },
+  { date: '04-27', dow: '월', files: 5,    phase: 2, star: false, headline: '재구조화 후 안정화', body: '6,183개 변경 다음 날의 미세 수정. 손으로 한 줄씩 매만지는 작업.' },
+  { date: '04-28', dow: '화', files: 10,   phase: 2, star: false, headline: '점진적 보충', body: '소규모. 다음 날 큰 변화의 직전.' },
+  { date: '04-29', dow: '수', files: 104,  phase: 3, star: true,  headline: 'AGENTS.md 488줄 등장 ★', body: 'Consolidate agent docs. 21일간 머리로 운영하던 룰을 한 번에 글로 옮긴 날. Zhang 2026 추가, stale wikilinks 수정도 같은 날.' },
+  { date: '04-30', dow: '목', files: 24,   phase: 3, star: false, headline: '룰 정착 후 첫 운영일', body: 'Monitor + 정리. AGENTS.md를 따라 처음 일하기.' },
+  { date: '05-01', dow: '금', files: 23,   phase: 3, star: false, headline: '운영 지속', body: '점진적 ingest. 시스템이 룰대로 돌기 시작.' },
+  { date: '05-02', dow: '토', files: 86,   phase: 4, star: true,  headline: 'Paper monitor 배치 ★', body: '12편 신규 + 노션 16페이지. 일일 자동화 패턴이 처음으로 한 번에 굴러간 날. Phase 4 시작.' },
+  { date: '05-03', dow: '일', files: 122,  phase: 4, star: false, headline: '신규 페이퍼 + 중복 정리', body: 'single-cell perturbation 페이퍼 추가, pdf-duplicate cleanup, wiki-merge-audit. 운영과 정리가 동시에.' },
+  { date: '05-04', dow: '월', files: 7,    phase: 4, star: false, headline: '주말 휴지', body: '가벼운 활동. 주말이지만 monitor는 돈다.' },
+  { date: '05-05', dow: '화', files: 6,    phase: 4, star: false, headline: '주말 휴지', body: '가벼운 활동. 사람 손이 가지 않아도 monitor는 돈다.' },
+  { date: '05-06', dow: '수', files: 24,   phase: 4, star: false, headline: 'Monitor + 수락 manuscript', body: 'Downloads ingest 배치 + 협력자 manuscript wiki 신설. 운영이 일상이 됨.' },
+  { date: '05-07', dow: '목', files: 643,  phase: 4, star: true,  headline: '대형 컨소시엄 페이퍼 대량 ★', body: '컨소시엄 페이퍼 일괄 ingest. 핸드오프 노트 작성. 분석 단계 직전의 코퍼스 보강.' },
+  { date: '05-08', dow: '금', files: 398,  phase: 5, star: true,  headline: '분석 작업물 등장 ★', body: '오늘. Gap-fill 코퍼스 확장 + 4개 프로젝트 분석 spec + research-question-scouting (32개 질문) + execution-backlog (7개 P0). 위키 노트에서 분석 작업물을 한꺼번에 끌어낸 날.' }
+];
+
+const phaseColors = {
+  1: 'oklch(0.62 0.14 48)',
+  2: 'oklch(0.56 0.13 148)',
+  3: 'oklch(0.66 0.16 85)',
+  4: 'oklch(0.48 0.14 320)',
+  5: 'oklch(0.50 0.09 200)'
+};
+const phaseSoft = {
+  1: 'var(--p1-soft)', 2: 'var(--p2-soft)', 3: 'var(--p3-soft)',
+  4: 'var(--p4-soft)', 5: 'var(--p5-soft)'
+};
+const phaseNames = { 1: '덤프', 2: '분류', 3: '규칙', 4: '운영', 5: '분석' };
+
+// Log-scale intensity → bar height (max ~85px)
+const maxFiles = Math.max(...dailyLog.map(d => d.files));
+const heightFor = (n) => {
+  if (n === 0) return 6;
+  return Math.max(8, Math.round(Math.log10(n + 1) / Math.log10(maxFiles + 1) * 85));
+};
+// Brightness for color intensity
+const intensityColor = (n, phase) => {
+  const base = phaseColors[phase];
+  if (n === 0) return null;
+  const lvl = Math.log10(n + 1) / Math.log10(maxFiles + 1); // 0..1
+  // darker (lower L) for higher intensity
+  const lAdj = (1 - lvl) * 0.18;
+  return `oklch(from ${base} calc(l + ${lAdj.toFixed(3)}) c h)`;
+};
+
+const ledgerStrip = document.getElementById('ledgerStrip');
+const ledgerAxis = document.getElementById('ledgerAxis');
+const ledgerDetail = document.getElementById('ledgerDetail');
+
+dailyLog.forEach((d, i) => {
+  const cell = document.createElement('button');
+  cell.className = 'day-cell';
+  cell.dataset.idx = i;
+  if (d.files === 0) cell.classList.add('idle');
+  const c = intensityColor(d.files, d.phase) || 'oklch(0.92 0.015 85)';
+  cell.style.setProperty('--c', c);
+  cell.innerHTML = `
+    ${d.star ? '<span class="star">★</span>' : ''}
+    <span class="day-bar" style="height: ${heightFor(d.files)}px; background: ${c};"></span>
+  `;
+  cell.title = `${d.date} (${d.dow}) — ${d.files} files · ${d.headline}`;
+  cell.addEventListener('click', () => renderDay(i));
+  ledgerStrip.appendChild(cell);
+});
+
+// Axis: show a label every ~5 days + week boundaries
+dailyLog.forEach((d, i) => {
+  const span = document.createElement('span');
+  if (i === 0 || i === 30 || i % 5 === 0) {
+    span.textContent = d.date.slice(3);
+    if (i === 0 || i === 30) span.classList.add('boundary');
+  } else {
+    span.innerHTML = '&nbsp;';
+  }
+  ledgerAxis.appendChild(span);
+});
+
+let activeIdx = 30; // start on today
+
+function renderDay(i) {
+  activeIdx = i;
+  const d = dailyLog[i];
+  document.querySelectorAll('.day-cell').forEach((c, k) => {
+    c.classList.toggle('active', k === i);
+  });
+  const c = phaseColors[d.phase];
+  const cs = phaseSoft[d.phase];
+  ledgerDetail.style.setProperty('--c', c);
+  ledgerDetail.style.setProperty('--c-soft', cs);
+  ledgerDetail.innerHTML = `
+    <div class="ld-meta">
+      <div class="ld-day">DAY ${String(i+1).padStart(2,'0')} · ${d.dow}요일</div>
+      <div class="ld-date">${d.date}</div>
+      <div class="ld-stats">
+        <div class="ld-stat"><span class="lab">변경 파일</span><span class="val">${d.files.toLocaleString()}</span></div>
+        <div class="ld-stat"><span class="lab">단계</span><span class="val" style="color:${c};">Phase ${d.phase} · ${phaseNames[d.phase]}</span></div>
+        <div class="ld-stat"><span class="lab">분기점</span><span class="val">${d.star ? '★ Yes' : '—'}</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="ld-phase" style="background:${cs};color:oklch(from ${c} calc(l - 0.15) c h);">PHASE ${String(d.phase).padStart(2,'0')} · ${phaseNames[d.phase]}</div>
+      <div class="ld-headline">${d.star ? '<span class="star">★</span>' : ''}${d.headline}</div>
+      <div class="ld-body">${d.body}</div>
+    </div>
+  `;
+  document.getElementById('prevDay').disabled = i === 0;
+  document.getElementById('nextDay').disabled = i === dailyLog.length - 1;
+}
+
+document.getElementById('prevDay').addEventListener('click', () => { if (activeIdx > 0) renderDay(activeIdx - 1); });
+document.getElementById('nextDay').addEventListener('click', () => { if (activeIdx < dailyLog.length - 1) renderDay(activeIdx + 1); });
+document.getElementById('todayBtn').addEventListener('click', () => renderDay(30));
+
+renderDay(30);
+
+// Keyboard navigation when ledger is in view
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft' && activeIdx > 0) renderDay(activeIdx - 1);
+  if (e.key === 'ArrowRight' && activeIdx < dailyLog.length - 1) renderDay(activeIdx + 1);
+});
+
+/* ============================
+   PHASE EXPLORER
+   ============================ */
+const phases = [
+  {
+    n: 1, name: '덤프', tagline: '먼저 다 넣는다', dates: '04-08 → 04-12',
+    color: 'var(--p1)', colorOklch: 'oklch(0.62 0.14 48)', soft: 'var(--p1-soft)',
+    summary: '4일 만에 약 3,500개 파일이 들어왔다. 폴더 구조는 단순하고, 운영 매뉴얼은 없다. 룰은 머릿속에만.',
+    actions: [
+      '<code class="tag">commit</code>491편 + 12 overview 페이지 (4-9)',
+      '<code class="tag">commit</code>2,435개 파일 업데이트 (4-12)',
+      '<code class="tag">tooling</code>paper_monitor.py 초안 작성',
+      '<code class="tag">setup</code>Karpathy LLM-wiki 패턴 적용'
+    ],
+    snap: `<span class="dim">llm-wiki/</span>
+├── papers/      <span class="dim"># PDF</span>
+├── sources/     <span class="dim"># 요약</span>
+├── wiki/        <span class="dim"># 구조화 노트</span>
+└── README
+
+<span class="dim"># AGENTS.md: 0줄
+# agenda/: 없음
+# 룰은 머릿속에만</span>`
+  },
+  {
+    n: 2, name: '분류', tagline: '폴더 안에 도메인 지도가 보인다', dates: '04-14 → 04-26',
+    color: 'var(--p2)', colorOklch: 'oklch(0.56 0.13 148)', soft: 'var(--p2-soft)',
+    summary: '12일 동안 카테고리가 세분화된다. neuroscience를 잘게 쪼개고, mouse-line/history tree를 만든다. wiki/overviews/가 본격 자란다.',
+    actions: [
+      '<code class="tag">refactor</code>neuroscience를 granular 카테고리로 분할 (4-26)',
+      '<code class="tag">add</code>mouse-line, history 폴더 신설',
+      '<code class="tag">grow</code>overviews/ 폴더가 통합 viewpoint의 거점',
+      '<code class="tag">cleanup</code>broken wikilinks 추적 시작'
+    ],
+    snap: `<span class="dim">wiki/</span>
+├── neuroscience/
+├── <span class="new">brain-development/</span>  <span class="dim"># ← 분리</span>
+├── <span class="new">brain-atlas/</span>        <span class="dim"># ← 분리</span>
+├── <span class="new">synapse-circuit/</span>    <span class="dim"># ← 분리</span>
+├── <span class="new">mouse-line/</span>         <span class="dim"># ← 신규</span>
+├── <span class="new">history/</span>            <span class="dim"># ← 신규</span>
+├── overviews/         <span class="dim"># 통합 viewpoint</span>
+└── ... (총 38 카테고리)`
+  },
+  {
+    n: 3, name: '규칙화', tagline: '머릿속을 글로 박는다', dates: '04-29',
+    color: 'var(--p3)', colorOklch: 'oklch(0.66 0.16 85)', soft: 'var(--p3-soft)',
+    summary: '한 번의 커밋으로 AGENTS.md 488줄이 적힌다. 그동안 머리로 운영하던 룰을 한꺼번에 글로 옮긴 결과다. 이날부터 Claude와 Codex가 같은 룰로 움직인다.',
+    actions: [
+      '<code class="tag">commit</code>"Consolidate agent docs" — 0 → 488줄',
+      '<code class="tag">policy</code>노션 앵커 3종 표준화',
+      '<code class="tag">policy</code>한국어 코멘트 정책 + contact aliases',
+      '<code class="tag">policy</code>로컬 경로 노션 본문 금지',
+      '<code class="tag">policy</code>매 세션 첫 작업 전 매뉴얼 재독 강제'
+    ],
+    snap: `<span class="hi">AGENTS.md</span> <span class="dim">(488줄)</span>
+├── Agent Startup Checklist
+├── Notion Comment Language Policy
+├── <span class="new">Notion Page Placement Rules</span>
+│   ├── Lab-wide anchor convention
+│   └── Posting rules
+├── Project ↔ DB ↔ Anchor Mapping
+├── Paper Monitor Workflow
+└── Contact Aliases
+
+<span class="dim"># 21일간의 머릿속 룰이
+# 한 번에 글로 박힌 시점</span>`
+  },
+  {
+    n: 4, name: '일일 운영', tagline: '한 번 걸어두면 매일 자동', dates: '05-02 → 05-07',
+    color: 'var(--p4)', colorOklch: 'oklch(0.48 0.14 320)', soft: 'var(--p4-soft)',
+    summary: '운영이 자동화된다. paper_monitor.py가 매일 돌고, 13개의 일일 리포트가 누적된다. 노션 포스팅이 배치 단위(12편 / 16페이지)로 굴러간다.',
+    actions: [
+      '<code class="tag">daily</code>paper_monitor.py 1,101줄 — 신규 후보 일별 추출',
+      '<code class="tag">daily</code>logs/monitor-YYYY-MM-DD.md 13개 누적',
+      '<code class="tag">batch</code>"Paper monitor batch (12편 신규 + 노션 16페이지)"',
+      '<code class="tag">cleanup</code>중복 stem 감지, PDF 중복 정리',
+      '<code class="tag">audit</code>broken wikilinks 자동 감사'
+    ],
+    snap: `<span class="dim">scripts/</span>
+├── <span class="hi">paper_monitor.py</span>  <span class="dim"># 1,101줄</span>
+├── monitor_reports/
+│   ├── monitor-2026-04-09.md
+│   ├── monitor-2026-04-22.md
+│   └── ... (13개)
+├── ingest_*.sh         <span class="dim"># 배치 스크립트</span>
+└── canonicalize_*.py   <span class="dim"># 중복 정리</span>
+
+<span class="dim">logs/</span>
+├── broken-wikilinks-*.md
+├── pdf-duplicate-cleanup-*.md
+└── metadata-blockers-*.md`
+  },
+  {
+    n: 5, name: '분석 단계', tagline: '읽는 위키에서 굴리는 위키로', dates: '05-08',
+    color: 'var(--p5)', colorOklch: 'oklch(0.50 0.09 200)', soft: 'var(--p5-soft)',
+    summary: '하루 안에 일어난 큰 변화. 위키 전체를 스캐닝해 32개 연구 질문을 추리고, 그중 7개를 P0 백로그로 정리한 뒤, 4개 프로젝트에 분석 스펙과 TSV 템플릿을 한 번에 생성했다. 위키가 "지식"이 아니라 "작업물"이다.',
+    actions: [
+      '<code class="tag">scout</code>research-question-scouting.md — 32개 질문',
+      '<code class="tag">spec</code>execution-backlog.md — 7개 백로그 (Goal/Input/Output/Done)',
+      '<code class="tag">spawn</code>4 프로젝트 분석 스펙 폴더 동시 생성',
+      '<code class="tag">prompt</code>"Assignable Agent Prompts" 섹션 — 서브에이전트용 프롬프트',
+      '<code class="tag">template</code>각 프로젝트마다 TSV 템플릿 헤더가 박힘'
+    ],
+    snap: `<span class="dim">agenda/</span>
+├── <span class="hi">research-question-scouting.md</span>
+├── <span class="hi">execution-backlog.md</span>
+├── &lt;project-A&gt;/
+│   ├── analysis-spec.md
+│   └── template.tsv
+├── &lt;project-B&gt;/
+│   └── ...
+├── &lt;project-C&gt;/
+│   └── ...
+└── &lt;project-D&gt;/
+    └── ...
+
+<span class="dim"># 하루 만에 4 프로젝트가 동시에
+# 분석 가능 상태가 됨</span>`
+  }
+];
+
+const phaseRail = document.getElementById('phaseRail');
+phases.forEach(p => {
+  const tab = document.createElement('button');
+  tab.className = 'phase-tab';
+  tab.dataset.phase = p.n;
+  tab.style.setProperty('--c', p.colorOklch);
+  tab.setAttribute('aria-pressed', 'false');
+  tab.innerHTML = `
+    <div class="pt-num">PHASE ${String(p.n).padStart(2,'0')}</div>
+    <div class="pt-name">${p.name}</div>
+    <div class="pt-dates">${p.dates}</div>
+  `;
+  tab.addEventListener('click', () => renderPhase(p.n));
+  phaseRail.appendChild(tab);
+});
+
+function renderPhase(n) {
+  const p = phases[n - 1];
+  document.querySelectorAll('.phase-tab').forEach(t => t.setAttribute('aria-pressed', t.dataset.phase == n ? 'true' : 'false'));
+  const stage = document.getElementById('phaseStage');
+  stage.style.setProperty('--c', p.colorOklch);
+  stage.style.setProperty('--c-soft', p.soft);
+  stage.innerHTML = `
+    <div class="phase-content">
+      <div>
+        <div class="phase-tagline">${p.tagline}</div>
+        <div class="phase-summary">${p.summary}</div>
+        <div class="phase-actions">
+          <h4>이 시기에 일어난 일</h4>
+          <ul>${p.actions.map(a => `<li>${a}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div>
+        <div class="phase-actions" style="margin-bottom: 1rem;">
+          <h4>당시 폴더 스냅샷</h4>
+        </div>
+        <pre class="phase-snap">${p.snap}</pre>
+      </div>
+    </div>
+  `;
+}
+renderPhase(1);
+
+/* ============================
+   TRELLIS RULES
+   ============================ */
+document.querySelectorAll('.t-rule').forEach(r => {
+  r.addEventListener('click', () => r.classList.toggle('open'));
+});
+
+/* ============================
+   LOOPS
+   ============================ */
+const loops = [
+  { cad: '매일', name: 'Paper Monitor', flow: 'RSS·DB → paper_monitor.py\n→ logs/monitor-YYYY-MM-DD.md\n→ Downloads/ 신규 PDF', out: '일자별 신규 후보 (13개 누적)', c: 'oklch(0.62 0.14 48)' },
+  { cad: '매일', name: 'Ingest', flow: 'PDF → sources/ 요약\n→ wiki/<category>/ 페이지\n→ index.md 갱신', out: '신규 wiki 노트 (10~30 / 일)', c: 'oklch(0.56 0.13 148)' },
+  { cad: '매일', name: 'Notion 포스팅', flow: 'wiki 노트 → 프로젝트 식별\n→ 📚 참고 논문 앵커 하위\n→ 페이지 ID 기록', out: '프로젝트 DB별 자식 페이지 (5~20 / 배치)', c: 'oklch(0.48 0.14 320)' },
+  { cad: '주간', name: 'Audit·정리', flow: '중복 stem 감지\n→ broken wikilinks 추적\n→ logs/ 블로커 기록', out: '클린업 commits + 블로커 리스트', c: 'oklch(0.66 0.16 85)' },
+  { cad: '분기점', name: 'Question → Backlog', flow: '위키 전체 스캐닝\n→ 연구 질문 P0/P1/P2\n→ Done + TSV + Prompt', out: '프로젝트별 분석 스펙 (1~7 / 분기점)', c: 'oklch(0.50 0.09 200)' }
+];
+const loopsGrid = document.getElementById('loopsGrid');
+loops.forEach(l => {
+  const card = document.createElement('div');
+  card.className = 'loop-card';
+  card.style.setProperty('--c', l.c);
+  card.style.setProperty('--c-soft', l.c.replace(/oklch\((.+?) (.+?) (.+?)\)/, 'oklch(0.93 0.04 $3)'));
+  card.innerHTML = `
+    <div class="loop-orbit">
+      <svg viewBox="0 0 80 80">
+        <circle class="ring" cx="40" cy="40" r="32" />
+        <circle class="arc" cx="40" cy="40" r="32" pathLength="100" />
+        <circle class="dot" cx="40" cy="8" r="4" />
+      </svg>
+    </div>
+    <div class="loop-cad">${l.cad}</div>
+    <div class="loop-name">${l.name}</div>
+    <div class="loop-flow">${l.flow.replace(/\n/g, '<br>')}</div>
+    <div class="loop-out"><strong>산출:</strong> ${l.out}</div>
+  `;
+  loopsGrid.appendChild(card);
+});
+
+/* ============================
+   TRELLIS BAR ANIMATION
+   ============================ */
+const tbarObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.tbar').forEach((b, i) => {
+        const h = b.dataset.h;
+        b.style.height = '0%';
+        setTimeout(() => { b.style.height = h + '%'; }, i * 200);
+      });
+      tbarObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+tbarObs.observe(document.querySelector('.trellis-chart'));
+
+/* ============================
+   COUNTER ANIMATION
+   ============================ */
+function animateCounter(el) {
+  const target = parseInt(el.dataset.count, 10);
+  const duration = 1400;
+  const start = performance.now();
+  const small = el.querySelector('small');
+  const smallText = small ? small.outerHTML : '';
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = Math.floor(target * eased);
+    el.innerHTML = val.toLocaleString() + smallText;
+    if (t < 1) requestAnimationFrame(step);
+    else el.innerHTML = target.toLocaleString() + smallText;
+  }
+  requestAnimationFrame(step);
+}
+// Animate hero counters immediately on script load (no observer dependency)
+document.querySelectorAll('.h-stat-num[data-count]').forEach(animateCounter);
+</script>
+</body>
+</html>
