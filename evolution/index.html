@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Compounding Wiki — 31일의 누적</title>
-<meta name="description" content="AI한테 논문 정리 시키는 법. 카톡으로 설명할 때 쓰는 3단계 그대로 옮긴 시작 가이드 + 그 폴더가 31일간 어떻게 자랐는지의 케이스 스터디.">
+<title>Compounding Wiki — 82일의 누적</title>
+<meta name="description" content="AI한테 논문 정리 시키는 법. 카톡으로 설명할 때 쓰는 3단계 그대로 옮긴 시작 가이드 + 그 폴더가 82일 동안 어떻게 자랐는지의 케이스 스터디.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -928,7 +928,7 @@ section {
 }
 
 /* ============================
-   DAILY LEDGER — 31일 원장
+   DAILY LEDGER — 첫 31일 원장
    ============================ */
 .ledger {
   margin-top: 2.5rem;
@@ -1146,11 +1146,101 @@ section {
 .ledger-nav button:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ============================
+   SINCE MAY — 82일차 변화 요약
+   ============================ */
+.now-section {
+  background: var(--surface-alt);
+  border-top: 1px solid oklch(0.88 0.018 80);
+  border-bottom: 1px solid oklch(0.88 0.018 80);
+}
+.now-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.6rem;
+  margin: 2rem 0;
+}
+@media (max-width: 960px) { .now-strip { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 620px) { .now-strip { grid-template-columns: repeat(2, 1fr); } }
+.now-metric {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  min-height: 96px;
+  box-shadow: var(--e1);
+}
+.now-num {
+  font-family: var(--f-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--c, var(--ink));
+}
+.now-lab {
+  margin-top: 0.35rem;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.now-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 900px) { .now-grid { grid-template-columns: 1fr; } }
+.now-card {
+  background: var(--surface);
+  border: 1px solid oklch(0.88 0.018 80);
+  border-radius: var(--r-md);
+  padding: 1.25rem;
+  box-shadow: var(--e1);
+  position: relative;
+  overflow: hidden;
+}
+.now-card::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--c, var(--p2));
+}
+.now-date {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  color: var(--c, var(--p2));
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.now-title {
+  font-family: var(--f-display);
+  font-size: 1.18rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0.45rem 0 0.55rem;
+}
+.now-body {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+.now-body code {
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  background: var(--surface-alt);
+  padding: 0.08rem 0.3rem;
+  border-radius: 3px;
+}
+
+/* ============================
    PHASE EXPLORER
    ============================ */
 .phase-rail {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 0.75rem;
   margin-bottom: 2rem;
 }
@@ -2490,30 +2580,30 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
     </div>
 
     <div class="story-bridge">
-      31-DAY CASE STUDY · 한 달 기록
-      <strong>이렇게 셋업한 폴더가 31일간 어떻게 자랐는지 보고 싶다면 ↓</strong>
+      82-DAY CASE STUDY · 첫 달과 그 이후
+      <strong>이렇게 셋업한 폴더가 82일 동안 어떻게 바뀌었는지 보고 싶다면 ↓</strong>
     </div>
 
     <div class="hero-stats">
       <div class="h-stat">
-        <div class="h-stat-num" data-count="31">0<small>일</small></div>
+        <div class="h-stat-num" data-count="82">0<small>일</small></div>
         <div class="h-stat-lab">관찰 기간</div>
       </div>
       <div class="h-stat">
-        <div class="h-stat-num" data-count="3955">0</div>
+        <div class="h-stat-num" data-count="8695">0</div>
         <div class="h-stat-lab">위키 노트</div>
       </div>
       <div class="h-stat">
-        <div class="h-stat-num" data-count="567">0<small>줄</small></div>
-        <div class="h-stat-lab">운영 매뉴얼</div>
+        <div class="h-stat-num" data-count="365">0</div>
+        <div class="h-stat-lab">overview 허브</div>
       </div>
       <div class="h-stat">
-        <div class="h-stat-num" data-count="13">0</div>
-        <div class="h-stat-lab">일일 모니터 리포트</div>
+        <div class="h-stat-num" data-count="121">0</div>
+        <div class="h-stat-lab">5/8 이후 커밋</div>
       </div>
       <div class="h-stat">
-        <div class="h-stat-num" data-count="5">0</div>
-        <div class="h-stat-lab">병렬 프로젝트</div>
+        <div class="h-stat-num" data-count="127">0</div>
+        <div class="h-stat-lab">6/28 신규 deep-ingest</div>
       </div>
     </div>
 
@@ -2702,7 +2792,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
         <div class="primer-body">
           한 페이퍼를 세 형태로 동시에 보관한다. <strong>원본 PDF</strong>, <strong>LLM 요약 마크다운</strong>, 그리고 <strong>구조화된 위키 페이지</strong>. 같은 정보의 세 검색 표면이다. PDF는 정확한 인용 때 연다. 요약 마크다운은 훑을 때 쓴다. 위키 페이지는 백링크 따라가며 종합할 때 들어간다.
         </div>
-        <div class="primer-stat">3,398 PDF · 3,369 요약 · 3,955 위키 노트</div>
+        <div class="primer-stat">5,439 PDF · 7,536 요약 · 8,695 위키 노트</div>
       </div>
 
       <div class="primer-card" style="--c: var(--p3); --c-soft: var(--p3-soft);">
@@ -2712,7 +2802,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
         <div class="primer-body">
           폴더 루트의 <code>AGENTS.md</code>를 매 세션 처음에 다시 읽고, 그 룰에 따라 작업하는 AI. 이 위키는 <strong>Claude</strong> (대화형) + <strong>Codex CLI</strong> (자동화) 두 에이전트가 같은 룰로 같이 쓴다. 명령이 아니라 목표를 준다.
         </div>
-        <div class="primer-stat">567줄 매뉴얼 · 2 에이전트 · 1 공유 폴더</div>
+        <div class="primer-stat">376줄 루트 매뉴얼 · 2 에이전트 · 분리된 세부 문서</div>
       </div>
 
       <div class="primer-card" style="--c: var(--p5); --c-soft: var(--p5-soft);">
@@ -2759,12 +2849,12 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
     <!-- Reading Guide -->
     <div class="reading-guide">
       <h3 class="rg-title">이 페이지를 어떻게 읽나</h3>
-      <p class="rg-sub">7개 섹션. 위에서 선택한 역할에 따라 우선 봐야 할 섹션이 다르다. 점은 그 섹션에 가장 도움받을 역할을 표시한다.</p>
+      <p class="rg-sub">9개 섹션. 위에서 선택한 역할에 따라 우선 봐야 할 섹션이 다르다. 점은 그 섹션에 가장 도움받을 역할을 표시한다.</p>
       <div class="rg-grid">
         <a href="#flow" class="rg-item">
           <div class="rg-num">§01</div>
           <div class="rg-name">Compounding Flow</div>
-          <div class="rg-desc">31일이 어떻게 누적됐나. 매일의 호흡.</div>
+          <div class="rg-desc">첫 31일이 어떻게 누적됐나. 매일의 호흡.</div>
           <div class="rg-roles">
             <span style="background:var(--role-undergrad)" title="학부생"></span>
             <span style="background:var(--role-grad)" title="대학원생"></span>
@@ -2772,17 +2862,27 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
             <span style="background:var(--role-pi)" title="PI"></span>
           </div>
         </a>
-        <a href="#phases" class="rg-item">
+        <a href="#since-may" class="rg-item">
           <div class="rg-num">§02</div>
-          <div class="rg-name">Five Phases</div>
-          <div class="rg-desc">5번의 분기점. 각 단계의 폴더 스냅샷.</div>
+          <div class="rg-name">After Day 31</div>
+          <div class="rg-desc">5월 8일 이후 51일간 바뀐 운영 방식.</div>
+          <div class="rg-roles">
+            <span style="background:var(--role-grad)" title="대학원생"></span>
+            <span style="background:var(--role-staff)" title="연구원"></span>
+            <span style="background:var(--role-pi)" title="PI"></span>
+          </div>
+        </a>
+        <a href="#phases" class="rg-item">
+          <div class="rg-num">§03</div>
+          <div class="rg-name">Six Phases</div>
+          <div class="rg-desc">6번의 분기점. 각 단계의 폴더 스냅샷.</div>
           <div class="rg-roles">
             <span style="background:var(--role-undergrad)" title="학부생"></span>
             <span style="background:var(--role-grad)" title="대학원생"></span>
           </div>
         </a>
         <a href="#trellis" class="rg-item">
-          <div class="rg-num">§03</div>
+          <div class="rg-num">§04</div>
           <div class="rg-name">Governance Trellis</div>
           <div class="rg-desc">머릿속 룰을 글로 박은 순간.</div>
           <div class="rg-roles">
@@ -2791,7 +2891,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
           </div>
         </a>
         <a href="#loops" class="rg-item">
-          <div class="rg-num">§04</div>
+          <div class="rg-num">§05</div>
           <div class="rg-name">Recurring Loops</div>
           <div class="rg-desc">매일·주간·분기점에 도는 5개 루프.</div>
           <div class="rg-roles">
@@ -2801,7 +2901,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
           </div>
         </a>
         <a href="#anatomy" class="rg-item">
-          <div class="rg-num">§05</div>
+          <div class="rg-num">§06</div>
           <div class="rg-name">Backlog Anatomy</div>
           <div class="rg-desc">분석 단위 한 항목의 6행 해부.</div>
           <div class="rg-roles">
@@ -2811,7 +2911,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
           </div>
         </a>
         <a href="#playbooks" class="rg-item">
-          <div class="rg-num">§06</div>
+          <div class="rg-num">§07</div>
           <div class="rg-name">Role Playbooks</div>
           <div class="rg-desc">학부·대학원·연구원·PI 30일 플레이북.</div>
           <div class="rg-roles">
@@ -2822,7 +2922,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
           </div>
         </a>
         <a href="#adapt" class="rg-item">
-          <div class="rg-num">§07</div>
+          <div class="rg-num">§08</div>
           <div class="rg-name">Adapt 8 원칙</div>
           <div class="rg-desc">다른 분야로 옮기는 이전 가능한 원칙.</div>
           <div class="rg-roles">
@@ -2830,7 +2930,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
           </div>
         </a>
         <a href="#workflows" class="rg-item">
-          <div class="rg-num">§08</div>
+          <div class="rg-num">§09</div>
           <div class="rg-name">Real Workflows</div>
           <div class="rg-desc">PI 학생 피드백, 미팅 자료, manuscript 검토, 협업 — 채팅창 한 마디 사례 5개.</div>
           <div class="rg-roles">
@@ -2852,7 +2952,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
       <div class="sec-eyebrow"><span class="num">00 B</span> · BEYOND THE WIKI</div>
       <h2 class="sec-title">위키 옆에 생긴 폴더들</h2>
       <p class="sec-sub">
-        처음엔 <code style="font-family:var(--f-mono);background:var(--p2-soft);padding:0.1rem 0.4rem;border-radius:3px;font-size:0.85rem;">papers/sources/wiki</code> 세 폴더만 있었다. 31일 뒤엔 그 옆에 일곱 폴더가 더 붙고, 외부 시스템 세 곳과 묶였다. 이 페이지가 다루는 건 위키 한 폴더가 아니라 그 둘레 전부다.
+        처음엔 <code style="font-family:var(--f-mono);background:var(--p2-soft);padding:0.1rem 0.4rem;border-radius:3px;font-size:0.85rem;">papers/sources/wiki</code> 세 폴더만 있었다. 82일차에는 공개 위키, 내부 agenda, 자동화 로그, 외부 협업 시스템이 서로 분리되면서도 같은 룰로 움직인다. 이 페이지가 다루는 건 위키 한 폴더가 아니라 그 둘레 전부다.
       </p>
     </div>
 
@@ -2864,26 +2964,26 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
           <div class="eco-folder">papers/</div>
           <div class="eco-name">원본 PDF</div>
           <div class="eco-body">인용할 때만 연다. 모든 추론의 바닥.</div>
-          <div class="eco-stat">3,398 PDF</div>
+          <div class="eco-stat">5,439 PDF</div>
         </div>
         <div class="eco-card" style="--c: var(--p3); --c-soft: var(--p3-soft);">
           <div class="eco-folder">sources/</div>
           <div class="eco-name">LLM 요약</div>
           <div class="eco-body">페이퍼 1편이 마크다운 1개로. 빠르게 훑을 때 쓴다.</div>
-          <div class="eco-stat">3,369 마크다운 노트</div>
+          <div class="eco-stat">7,536 마크다운 노트</div>
         </div>
         <div class="eco-card" style="--c: var(--p2); --c-soft: var(--p2-soft);">
           <div class="eco-folder">wiki/</div>
           <div class="eco-name">구조화 노트</div>
           <div class="eco-body">백링크·frontmatter·카테고리. 재사용되는 지식 원자.</div>
-          <div class="eco-stat">3,955 페이지 / 38 카테고리</div>
+          <div class="eco-stat">8,695 페이지 / 45 카테고리</div>
         </div>
       </div>
     </div>
 
     <!-- Tier 2: Operations 7 -->
     <div class="eco-tier">
-      <div class="eco-tier-label">Operations <span class="count">7 폴더 · 한 달 사이 신설</span></div>
+      <div class="eco-tier-label">Operations <span class="count">7 폴더 · 첫 달 이후 정제</span></div>
       <div class="eco-grid-ops">
         <div class="eco-card" style="--c: var(--p4); --c-soft: var(--p4-soft);">
           <div class="eco-folder">agenda/</div>
@@ -2893,7 +2993,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
         <div class="eco-card" style="--c: var(--p5); --c-soft: var(--p5-soft);">
           <div class="eco-folder">interactives/</div>
           <div class="eco-name">시각화</div>
-          <div class="eco-body">이 페이지를 포함한 13개 인터랙티브. 데이터와 HTML 묶음.</div>
+          <div class="eco-body">이 페이지를 포함한 12개 인터랙티브. 데이터와 HTML 묶음.</div>
         </div>
         <div class="eco-card" style="--c: var(--p3); --c-soft: var(--p3-soft);">
           <div class="eco-folder">slides/</div>
@@ -2966,7 +3066,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
           <div class="eco-ext-icon">A</div>
           <div class="eco-name">AI Agents</div>
           <div class="eco-body">
-            <strong>Claude</strong>는 대화형 — 분석 스펙·미팅 노트·인터랙티브·메일 초안을 짠다. <strong>Codex CLI</strong>는 배치 자동화 — paper monitor·인제스트·audit. 둘 다 같은 AGENTS.md 567줄을 공유한다.
+            <strong>Claude</strong>는 대화형 — 분석 스펙·미팅 노트·인터랙티브·메일 초안을 짠다. <strong>Codex CLI</strong>는 배치 자동화 — paper monitor·인제스트·audit. 둘 다 같은 AGENTS.md를 읽되, 세부 절차는 docs/와 agenda/ 규칙 파일로 분리한다.
           </div>
           <div class="eco-stat">2 에이전트 · 1 매뉴얼</div>
         </div>
@@ -2998,15 +3098,15 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
       <div class="sec-eyebrow"><span class="num">01</span> · COMPOUNDING FLOW</div>
       <h2 class="sec-title">오늘은 <em>어제</em> 위에 쌓인다</h2>
       <p class="sec-sub">
-        아래 차트에서 31일 동안 5개의 운영 레이어가 어떻게 쌓였는지 본다.
-        각 레이어는 사라지지 않는다. 새 레이어가 올라올수록 시스템은 겹겹이 쌓인다.
+        아래 차트는 첫 31일 동안 5개의 운영 레이어가 어떻게 쌓였는지 보여준다.
+        이 첫 달 이후에는 단순히 더 많이 쌓인 것이 아니라, 공개 지식과 내부 운영을 나누고 품질 기준을 강제하는 쪽으로 바뀐다.
         이때부터 위키는 저장소가 아니라 <em>운영체제</em>에 가까워진다.
       </p>
     </div>
 
     <div class="flow-card">
       <div class="flow-svg-wrap" id="flowWrap">
-        <svg id="flowSvg" class="flow-svg" viewBox="0 0 1000 380" preserveAspectRatio="none" aria-label="31일간 5개 레이어의 누적 흐름">
+        <svg id="flowSvg" class="flow-svg" viewBox="0 0 1000 380" preserveAspectRatio="none" aria-label="첫 31일간 5개 레이어의 누적 흐름">
           <defs>
             <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="1.2"/>
@@ -3039,7 +3139,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
     <div class="ledger" id="ledger">
       <div class="ledger-head">
         <div>
-          <div class="ledger-title">31일 일일 원장 — 매일이 보인다</div>
+          <div class="ledger-title">첫 31일 일일 원장 — 매일이 보인다</div>
           <div class="ledger-hint">막대 = 그날 변경된 파일 수 (log scale) · ★ = 분기점 · 클릭해서 그날 일을 펼쳐 보라</div>
         </div>
         <div class="ledger-scale">
@@ -3055,7 +3155,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
       <div class="ledger-detail" id="ledgerDetail"></div>
       <div class="ledger-nav">
         <button id="prevDay">← 전날</button>
-        <button id="todayBtn">오늘 (5/8)</button>
+        <button id="todayBtn">5/8 스냅샷</button>
         <button id="nextDay">다음날 →</button>
       </div>
     </div>
@@ -3063,7 +3163,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
     <div class="role-callout">
       <div class="role-callout-head">역할별로 이 원장을 읽는 법</div>
       <div class="role-callout-body" data-show-role="undergrad">
-        <strong>학부생이라면.</strong> 4월 8일에 처음 들어왔다고 상상해 보면, 그날 위키는 거의 비어 있었다. 31일 뒤엔 4,000개에 가까운 노트와 567줄짜리 매뉴얼이 있다. 새로 들어왔을 때 어디서부터 봐야 하나 막막해도 괜찮다. 5층 중 1~2층(papers, sources)만 먼저 익히고 나머지는 시간이 지나면서 자연히 보인다.
+        <strong>학부생이라면.</strong> 4월 8일에 처음 들어왔다고 상상해 보면, 그날 위키는 거의 비어 있었다. 첫 31일 뒤엔 4,000개에 가까운 노트와 운영 매뉴얼이 있었다. 82일차에는 노트가 8,000개를 넘었지만 시작법은 같다. 먼저 papers와 sources만 익히고, synthesis와 agenda는 시간이 지나면서 자연히 보인다.
       </div>
       <div class="role-callout-body" data-show-role="grad">
         <strong>대학원생이 자주 만지는 건</strong> 4번 레이어(일일 운영 루프)와 5번 레이어(분석 스펙) 두 곳. 이 두 레이어가 가장 늦게 나타났지만 가장 빠르게 쌓이고 있다. 매일 paper monitor를 돌리고 분석 백로그 한 항목을 클로징하면 이 두 레이어가 자란다.
@@ -3078,13 +3178,99 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
   </div>
 </section>
 
+<!-- ===== §01B AFTER THE FIRST MONTH ===== -->
+<section class="now-section" id="since-may">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span class="num">01 B</span> · AFTER DAY 31</div>
+      <h2 class="sec-title">한 달 뒤, 위키는 <em>더 큰 폴더</em>가 아니었다</h2>
+      <p class="sec-sub">
+        5월 8일까지의 변화가 "PDF 더미 → 분석 작업물"이었다면, 그 뒤 51일의 변화는 "많이 쌓기 → 믿고 굴릴 수 있게 정제하기"였다.
+        공개 위키와 내부 운영을 나누고, 검색 인덱스를 계층화하고, 고립된 페이지를 허브로 접고, 모든 신규 ingest에 synthesis 링크와 supersede check를 붙이기 시작했다.
+      </p>
+    </div>
+
+    <div class="now-strip" aria-label="2026-06-28 current llm-wiki snapshot">
+      <div class="now-metric" style="--c: var(--p1);">
+        <div class="now-num">5,439</div>
+        <div class="now-lab">PDF</div>
+      </div>
+      <div class="now-metric" style="--c: var(--p3);">
+        <div class="now-num">7,536</div>
+        <div class="now-lab">source notes</div>
+      </div>
+      <div class="now-metric" style="--c: var(--p2);">
+        <div class="now-num">8,695</div>
+        <div class="now-lab">wiki pages</div>
+      </div>
+      <div class="now-metric" style="--c: var(--p5);">
+        <div class="now-num">365</div>
+        <div class="now-lab">overview hubs</div>
+      </div>
+      <div class="now-metric" style="--c: var(--p4);">
+        <div class="now-num">121</div>
+        <div class="now-lab">post-May commits</div>
+      </div>
+      <div class="now-metric" style="--c: var(--p1);">
+        <div class="now-num">127</div>
+        <div class="now-lab">6/28 new papers</div>
+      </div>
+    </div>
+
+    <div class="now-grid">
+      <div class="now-card" style="--c: var(--p3);">
+        <div class="now-date">2026-05-16</div>
+        <div class="now-title">검색이 일회성이 아니라 운영 루프가 됐다</div>
+        <div class="now-body">
+          <code>qmd</code> 재색인 래퍼와 PDF 추적 정책이 들어왔다. 새 파일을 넣을 때마다 손으로 뒤적이는 방식에서, 인덱스 갱신 시점과 책임을 정해 두는 방식으로 바뀌었다.
+        </div>
+      </div>
+      <div class="now-card" style="--c: var(--p2);">
+        <div class="now-date">2026-06-05</div>
+        <div class="now-title">고립 논문을 허브로 묶기 시작했다</div>
+        <div class="now-body">
+          Perturb-seq 방법론, MPRA, high-impact paper audit처럼 "논문 추가"보다 "어느 overview에 붙일 것인가"가 더 중요해졌다. 유지보수 스크립트와 work log가 함께 생겼다.
+        </div>
+      </div>
+      <div class="now-card" style="--c: var(--p5);">
+        <div class="now-date">2026-06-07</div>
+        <div class="now-title">AGENTS.md는 커지는 대신 분리됐다</div>
+        <div class="now-body">
+          루트 매뉴얼은 801줄에서 300줄대로 줄고, 세부 절차는 docs와 agenda 규칙으로 빠졌다. 좋은 운영 매뉴얼은 계속 길어지는 문서가 아니라, 자주 쓰는 규칙과 세부 절차를 나누는 문서가 됐다.
+        </div>
+      </div>
+      <div class="now-card" style="--c: var(--p4);">
+        <div class="now-date">2026-06-21</div>
+        <div class="now-title">공개 위키와 내부 연구 노트를 갈랐다</div>
+        <div class="now-body">
+          in-prep manuscript, lab-program page, 외부 공개에 맞지 않는 process page를 wiki 밖으로 옮겼다. 위키는 공개 지식층, agenda는 내부 운영층이라는 경계가 생겼다.
+        </div>
+      </div>
+      <div class="now-card" style="--c: var(--p1);">
+        <div class="now-date">2026-06-23</div>
+        <div class="now-title">질문 페이지와 orphan을 topic hub로 접었다</div>
+        <div class="now-body">
+          수백 개 연구 질문을 topic Open Questions로 흡수하고, synthesis-orphan을 category별로 drain했다. 이때부터 "페이지 수"보다 "허브에 연결됐는가"가 품질 지표가 됐다.
+        </div>
+      </div>
+      <div class="now-card" style="--c: var(--p2);">
+        <div class="now-date">2026-06-28</div>
+        <div class="now-title">대량 ingest도 synthesis-first가 됐다</div>
+        <div class="now-body">
+          <code>논문_2026</code> 배치에서 181 PDFs를 검사하고, DOI 중복 53개를 건너뛰고, 127편을 새로 넣었다. 각 항목은 PDF, source, wiki, bidirectional synthesis link, supersede check를 한 묶음으로 갖는다.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== PHASE EXPLORER ===== -->
 <section id="phases">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-eyebrow"><span class="num">02</span> · FIVE PHASES</div>
-      <h2 class="sec-title">다섯 번의 분기점</h2>
-      <p class="sec-sub">한 달이 균일하지는 않았다. 다섯 번의 분기점이 있었고, 각 시점이 시스템에 새 레이어를 더했다. 카드를 클릭해 그 시점의 폴더 스냅샷을 펼쳐 보라.</p>
+      <div class="sec-eyebrow"><span class="num">03</span> · SIX PHASES</div>
+      <h2 class="sec-title">여섯 번의 분기점</h2>
+      <p class="sec-sub">첫 달이 균일하지 않았고, 그 뒤 51일도 단순한 양적 확장이 아니었다. 여섯 번째 분기점은 공개 위키와 내부 운영을 분리하고, 모든 ingest에 synthesis 링크와 supersede check를 요구한 품질 전환이다. 카드를 클릭해 각 시점의 폴더 스냅샷을 펼쳐 보라.</p>
     </div>
 
     <div class="phase-rail" id="phaseRail"></div>
@@ -3093,7 +3279,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
     <div class="role-callout">
       <div class="role-callout-head">역할별로 가장 중요한 단계</div>
       <div class="role-callout-body" data-show-role="undergrad">
-        <strong>학부생이 먼저 보는 건 Phase 1~2 (덤프 → 분류).</strong> 처음 들어왔을 때 가장 먼저 부딪히는 질문은 "이 폴더에 뭐가 있나". Phase 1의 단순 3폴더 구조(papers/sources/wiki)부터 익히고, Phase 2의 카테고리는 한 달 분량의 도메인 지도로 본다. 외워야 할 게 아니라 검색할 때 어디를 봐야 하는지의 힌트.
+        <strong>학부생이 먼저 보는 건 Phase 1~2 (덤프 → 분류).</strong> 처음 들어왔을 때 가장 먼저 부딪히는 질문은 "이 폴더에 뭐가 있나". Phase 1의 단순 3폴더 구조(papers/sources/wiki)부터 익히고, Phase 2의 카테고리는 첫 달 분량의 도메인 지도로 본다. 외워야 할 게 아니라 검색할 때 어디를 봐야 하는지의 힌트.
       </div>
       <div class="role-callout-body" data-show-role="grad">
         <strong>대학원생의 일상은 Phase 4~5 (운영 → 분석)에 있다.</strong> 매일 돌아가는 paper_monitor, 분석 스펙을 작성해 서브에이전트에 던지는 워크플로. Phase 5의 "Assignable Prompt" 패턴을 익히면 자는 동안에도 작업이 진행된다.
@@ -3112,9 +3298,9 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
 <section id="trellis">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-eyebrow"><span class="num">03</span> · GOVERNANCE TRELLIS</div>
+      <div class="sec-eyebrow"><span class="num">04</span> · GOVERNANCE TRELLIS</div>
       <h2 class="sec-title">머릿속 룰이 <em>한 번에</em> 글이 됐다</h2>
-      <p class="sec-sub">AGENTS.md를 4월 29일 단 한 번의 커밋으로 0줄에서 488줄로 적었다. 그 후엔 미세 조정만 있었다. 21일 동안 머리로 운영하던 룰을 한 번에 글로 옮긴 시점이다. 이날부터 사람과 Claude, Codex가 같은 페이지에서 작업을 시작한다.</p>
+      <p class="sec-sub">AGENTS.md는 4월 29일 단 한 번의 커밋으로 0줄에서 488줄로 생겼고, 5월에는 567줄까지 자랐다. 6월에는 반대로 줄었다. 루트 매뉴얼을 376줄로 줄이고 세부 절차를 docs와 agenda 규칙으로 분리하면서, 사람과 Claude, Codex가 같은 시작점을 공유하되 문서 하나에 모든 것을 밀어 넣지 않게 됐다.</p>
     </div>
 
     <div class="trellis">
@@ -3134,7 +3320,11 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
           </div>
           <div class="tbar-col">
             <div class="tbar" data-h="100" style="height:100%; --c: var(--p2);"><span class="tbar-val">567</span></div>
-            <div class="tbar-lab"><strong>05-08</strong>현재</div>
+            <div class="tbar-lab"><strong>05-08</strong>첫 달</div>
+          </div>
+          <div class="tbar-col">
+            <div class="tbar" data-h="66" style="height:66%; --c: var(--p5);"><span class="tbar-val">376</span></div>
+            <div class="tbar-lab"><strong>06-28</strong>분리 후</div>
           </div>
         </div>
       </div>
@@ -3162,7 +3352,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
         <strong>연구원에게 이 매뉴얼은 진짜 직무 기술서다.</strong> 매주 읽고, 깨진 부분은 PR로 고친다. 매뉴얼 없는 시스템은 연구원 한 명이 휴가 가는 순간 멈춘다.
       </div>
       <div class="role-callout-body" data-show-role="pi">
-        <strong>PI 관점에서 매뉴얼이 567줄을 넘어 800줄, 1000줄로 가면</strong> 좋은 신호가 아니다. 그 시점엔 룰이 분야별로 분기되어 있다. 분리된 sub-AGENTS.md를 도입한다.
+        <strong>PI 관점에서 좋은 신호는 매뉴얼이 계속 길어지는 것이 아니다.</strong> 6월처럼 루트 규칙은 짧게 유지하고, 세부 절차를 docs와 agenda 규칙으로 분리하는 쪽이 지속 가능하다. 한 파일이 800줄, 1000줄로 가면 분기할 때다.
       </div>
     </div>
   </div>
@@ -3172,7 +3362,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
 <section id="loops">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-eyebrow"><span class="num">04</span> · RECURRING LOOPS</div>
+      <div class="sec-eyebrow"><span class="num">05</span> · RECURRING LOOPS</div>
       <h2 class="sec-title">다섯 개의 도는 시스템</h2>
       <p class="sec-sub">위키가 정적인 저장소에서 회전하는 시스템으로 바뀌었다. 다섯 개의 독립 루프가 각자의 주기로 계속 돈다. 한 루프가 멈춰도 다른 루프는 돈다.</p>
     </div>
@@ -3201,7 +3391,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
 <section id="anatomy">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-eyebrow"><span class="num">05</span> · BACKLOG ANATOMY</div>
+      <div class="sec-eyebrow"><span class="num">06</span> · BACKLOG ANATOMY</div>
       <h2 class="sec-title">분석 백로그 한 항목의 해부</h2>
       <p class="sec-sub">이 6행 템플릿이 위키 노트를 분석 단위로 굳히는 단위다. 추상적인 연구 질문도 이 6칸을 채우면 즉시 서브에이전트에 던질 수 있는 형태가 된다.</p>
     </div>
@@ -3240,7 +3430,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
 <section id="playbooks" style="background: linear-gradient(180deg, transparent 0%, var(--surface-alt) 100%);">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-eyebrow"><span class="num">06</span> · ROLE PLAYBOOKS</div>
+      <div class="sec-eyebrow"><span class="num">07</span> · ROLE PLAYBOOKS</div>
       <h2 class="sec-title">네 명의 사용자, 네 개의 시작</h2>
       <p class="sec-sub">같은 위키를 누가 어떻게 쓰는가. 각 카드는 그 역할의 첫 30일 플레이북이다.</p>
     </div>
@@ -3321,7 +3511,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
 <section id="adapt">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-eyebrow"><span class="num">07</span> · ADAPT THIS</div>
+      <div class="sec-eyebrow"><span class="num">08</span> · ADAPT THIS</div>
       <h2 class="sec-title">다른 연구실로 <em>옮길 수 있는</em> 8 원칙</h2>
       <p class="sec-sub">생물학·신경과학에 묶인 시스템이 아니다. "1인 연구자 + 다중 AI 에이전트" 환경이면 어떤 분야에도 통한다. 8개 원칙을 자기 분야의 동사로 바꾸기만 하면 된다.</p>
     </div>
@@ -3345,7 +3535,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
 <section class="setup-section" id="workflows">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-eyebrow"><span class="num">08</span> · REAL WORKFLOWS</div>
+      <div class="sec-eyebrow"><span class="num">09</span> · REAL WORKFLOWS</div>
       <h2 class="sec-title">이렇게 <em>씁니다</em></h2>
       <p class="sec-sub">
         터미널이나 코드는 거의 안 만집니다. 채팅창에 한두 줄 던지면 끝나는 일들. 첫 셋업은 맨 위 "나도 이거 세팅해줘" gist 한 번이면 충분하고, 그 이후의 일상은 아래 다섯 시나리오에 가깝습니다.
@@ -3465,7 +3655,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
     <div class="footer-grid">
       <div>
         <h5>관찰 데이터</h5>
-        2026-04-08 → 2026-05-08 (31일)<br>
+        2026-04-08 → 2026-06-28 (82일)<br>
         git log · AGENTS.md · agenda/ · scripts/<br>
         프로젝트 이름 익명화 처리됨
       </div>
@@ -3484,7 +3674,7 @@ body[data-role="pi"]        .phase-tab[data-phase="5"] {
       </div>
     </div>
     <div style="border-top: 1px solid var(--ink-line); padding-top: 1.25rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-      <span>Compounding Wiki — 2026-05-08 스냅샷</span>
+      <span>Compounding Wiki — 2026-06-28 업데이트</span>
       <span><a href="../index.html">← 인터랙티브 인덱스</a></span>
     </div>
   </div>
@@ -3516,7 +3706,7 @@ const chainStages = [
     soft: 'var(--p1-soft)',
     body: '연구실의 모든 추론이 출발하는 바닥. PDF 자체는 검색이 어렵지만 <strong>정확한 인용</strong>과 figure 재참조의 단일 소스다. PDF 원본이 없으면 위 단계는 출처 없는 추론으로 빠진다.',
     uses: '학부 / 대학원 / 연구원 / PI 모두',
-    count: '3,398 PDF'
+    count: '5,439 PDF'
   },
   {
     id: 2, label: '요약', en: 'LLM Summary',
@@ -3525,7 +3715,7 @@ const chainStages = [
     soft: 'var(--p3-soft)',
     body: 'LLM이 PDF를 읽고 만든 <strong>마크다운 요약</strong>. 페이퍼 1편 = 노트 1개. 빠르게 훑기에 최적화되어 있고, 검색 가능하며, 인용 가능하다. 위키 노트를 만들 때의 1차 입력.',
     uses: '학부 (정독 전 훑기) / 대학원 (인용 풀)',
-    count: '3,369 요약'
+    count: '7,536 요약'
   },
   {
     id: 3, label: '위키', en: 'Structured Note',
@@ -3534,7 +3724,7 @@ const chainStages = [
     soft: 'var(--p2-soft)',
     body: '카테고리·frontmatter·백링크가 박힌 <strong>구조화된 노트</strong>. 한 페이퍼가 여러 위키 페이지에서 참조되고, 한 위키 페이지가 여러 페이퍼를 합친다. 재사용 가능한 지식 원자.',
     uses: '대학원 (논문 쓰기) / 연구원 (감사)',
-    count: '3,955 노트 / 38 카테고리'
+    count: '8,695 노트 / 45 카테고리'
   },
   {
     id: 4, label: '종합', en: 'Synthesis',
@@ -3543,7 +3733,7 @@ const chainStages = [
     soft: 'var(--p5-soft)',
     body: '여러 페이퍼·여러 위키 노트를 한 viewpoint로 묶은 <strong>도메인 통합 페이지</strong>. "이 분야의 현재 지도"를 들여다볼 때 첫 페이지. overview 1개에 30~80개의 백링크가 들어 있다.',
     uses: '대학원 / 연구원 / PI (현장 파악)',
-    count: '341 overview'
+    count: '365 overview'
   },
   {
     id: 5, label: '스펙', en: 'Analysis Spec',
@@ -3552,7 +3742,7 @@ const chainStages = [
     soft: 'var(--p4-soft)',
     body: 'Goal·Input·Output·Done·Template·Prompt 6행으로 잠긴 <strong>분석 작업 단위</strong>. 위키를 읽기만 하지 않고 "위키에서 다음 작업을 끌어낸" 결과물. 서브에이전트에 그대로 던질 수 있는 형태.',
     uses: '대학원 (직접 작성) / 연구원 (PR 리뷰) / PI (전략)',
-    count: '4 프로젝트 × spec + TSV'
+    count: 'agenda 265 files'
   },
   {
     id: 6, label: '결과', en: 'Research Output',
@@ -3966,7 +4156,7 @@ flowSvg.addEventListener('mouseleave', () => {
 });
 
 /* ============================
-   DAILY LEDGER — 31일치 진짜 데이터
+   DAILY LEDGER — 첫 31일치 진짜 데이터
    files = 그날 modified 파일 수 (find -newermt 측정)
    ============================ */
 const dailyLog = [
@@ -3988,7 +4178,7 @@ const dailyLog = [
   { date: '04-23', dow: '목', files: 4,    phase: 2, star: false, headline: '점진적', body: '소규모 활동. 다음 날 대규모 재구조화의 직전.' },
   { date: '04-24', dow: '금', files: 42,   phase: 2, star: false, headline: 'Audit 시작', body: 'broken-wikilinks, duplicate-source-title-triage, metadata-blockers — 세 audit 로그가 한 날에 쓰임. 품질 점검 페이즈.' },
   { date: '04-25', dow: '토', files: 71,   phase: 2, star: false, headline: 'Audit 심화', body: '품질 점검 작업 지속. 다음 날 대규모 재구조화의 준비 단계.' },
-  { date: '04-26', dow: '일', files: 6183, phase: 2, star: true,  headline: '대규모 재구조화 ★', body: 'neuroscience를 granular 카테고리로 분할. mouse-line/history tree 신설. ASD mouse corpus 정리. 그날 파일 6,183개가 움직였다. 31일 중 가장 큰 스파이크.' },
+  { date: '04-26', dow: '일', files: 6183, phase: 2, star: true,  headline: '대규모 재구조화 ★', body: 'neuroscience를 granular 카테고리로 분할. mouse-line/history tree 신설. ASD mouse corpus 정리. 그날 파일 6,183개가 움직였다. 첫 31일 중 가장 큰 스파이크.' },
   { date: '04-27', dow: '월', files: 5,    phase: 2, star: false, headline: '재구조화 후 안정화', body: '6,183개 변경 다음 날의 미세 수정. 손으로 한 줄씩 매만지는 작업.' },
   { date: '04-28', dow: '화', files: 10,   phase: 2, star: false, headline: '점진적 보충', body: '소규모. 다음 날 큰 변화의 직전.' },
   { date: '04-29', dow: '수', files: 104,  phase: 3, star: true,  headline: 'AGENTS.md 488줄 등장 ★', body: 'Consolidate agent docs. 21일간 머리로 운영하던 룰을 한 번에 글로 옮긴 날. Zhang 2026 추가, stale wikilinks 수정도 같은 날.' },
@@ -4000,7 +4190,7 @@ const dailyLog = [
   { date: '05-05', dow: '화', files: 6,    phase: 4, star: false, headline: '주말 휴지', body: '가벼운 활동. 사람 손이 가지 않아도 monitor는 돈다.' },
   { date: '05-06', dow: '수', files: 24,   phase: 4, star: false, headline: 'Monitor + 수락 manuscript', body: 'Downloads ingest 배치 + 협력자 manuscript wiki 신설. 운영이 일상이 됨.' },
   { date: '05-07', dow: '목', files: 643,  phase: 4, star: true,  headline: '대형 컨소시엄 페이퍼 대량 ★', body: '컨소시엄 페이퍼 일괄 ingest. 핸드오프 노트 작성. 분석 단계 직전의 코퍼스 보강.' },
-  { date: '05-08', dow: '금', files: 398,  phase: 5, star: true,  headline: '분석 작업물 등장 ★', body: '오늘. Gap-fill 코퍼스 확장 + 4개 프로젝트 분석 spec + research-question-scouting (32개 질문) + execution-backlog (7개 P0). 위키 노트에서 분석 작업물을 한꺼번에 끌어낸 날.' }
+  { date: '05-08', dow: '금', files: 398,  phase: 5, star: true,  headline: '분석 작업물 등장 ★', body: '첫 달의 도착점. Gap-fill 코퍼스 확장 + 4개 프로젝트 분석 spec + research-question-scouting (32개 질문) + execution-backlog (7개 P0). 위키 노트에서 분석 작업물을 한꺼번에 끌어낸 날.' }
 ];
 
 const phaseColors = {
@@ -4014,7 +4204,7 @@ const phaseSoft = {
   1: 'var(--p1-soft)', 2: 'var(--p2-soft)', 3: 'var(--p3-soft)',
   4: 'var(--p4-soft)', 5: 'var(--p5-soft)'
 };
-const phaseNames = { 1: '덤프', 2: '분류', 3: '규칙', 4: '운영', 5: '분석' };
+const phaseNames = { 1: '덤프', 2: '분류', 3: '규칙', 4: '운영', 5: '분석', 6: '정제' };
 
 // Log-scale intensity → bar height (max ~85px)
 const maxFiles = Math.max(...dailyLog.map(d => d.files));
@@ -4150,7 +4340,7 @@ const phases = [
 ├── <span class="new">mouse-line/</span>         <span class="dim"># ← 신규</span>
 ├── <span class="new">history/</span>            <span class="dim"># ← 신규</span>
 ├── overviews/         <span class="dim"># 통합 viewpoint</span>
-└── ... (총 38 카테고리)`
+└── ... (첫 달 총 38 카테고리)`
   },
   {
     n: 3, name: '규칙화', tagline: '머릿속을 글로 박는다', dates: '04-29',
@@ -4179,10 +4369,10 @@ const phases = [
   {
     n: 4, name: '일일 운영', tagline: '한 번 걸어두면 매일 자동', dates: '05-02 → 05-07',
     color: 'var(--p4)', colorOklch: 'oklch(0.48 0.14 320)', soft: 'var(--p4-soft)',
-    summary: '운영이 자동화된다. paper_monitor.py가 매일 돌고, 13개의 일일 리포트가 누적된다. 노션 포스팅이 배치 단위(12편 / 16페이지)로 굴러간다.',
+    summary: '첫 달에는 운영이 자동화된다. paper_monitor.py가 매일 돌고, 13개의 일일 리포트가 누적된다. 노션 포스팅이 배치 단위(12편 / 16페이지)로 굴러간다.',
     actions: [
       '<code class="tag">daily</code>paper_monitor.py 1,101줄 — 신규 후보 일별 추출',
-      '<code class="tag">daily</code>logs/monitor-YYYY-MM-DD.md 13개 누적',
+      '<code class="tag">daily</code>logs/monitor-YYYY-MM-DD.md 첫 달 13개 누적',
       '<code class="tag">batch</code>"Paper monitor batch (12편 신규 + 노션 16페이지)"',
       '<code class="tag">cleanup</code>중복 stem 감지, PDF 중복 정리',
       '<code class="tag">audit</code>broken wikilinks 자동 감사'
@@ -4192,7 +4382,7 @@ const phases = [
 ├── monitor_reports/
 │   ├── monitor-2026-04-09.md
 │   ├── monitor-2026-04-22.md
-│   └── ... (13개)
+│   └── ... (첫 달 13개)
 ├── ingest_*.sh         <span class="dim"># 배치 스크립트</span>
 └── canonicalize_*.py   <span class="dim"># 중복 정리</span>
 
@@ -4227,6 +4417,30 @@ const phases = [
 
 <span class="dim"># 하루 만에 4 프로젝트가 동시에
 # 분석 가능 상태가 됨</span>`
+  },
+  {
+    n: 6, name: '정제', tagline: '많이 쌓은 뒤, 믿을 수 있게 접는다', dates: '05-09 → 06-28',
+    color: 'var(--p2)', colorOklch: 'oklch(0.56 0.13 148)', soft: 'var(--p2-soft)',
+    summary: '첫 달 이후 51일은 양적 성장보다 품질 전환이 컸다. public wiki와 internal agenda를 분리하고, question/orphan 페이지를 topic hub로 접고, 모든 신규 ingest에 bidirectional synthesis link와 supersede check를 요구했다. 6월 28일 기준 wiki는 8,695 페이지, 45 카테고리, 365 overview 허브가 됐다.',
+    actions: [
+      '<code class="tag">policy</code>공개 wiki와 in-prep / lab-program / agenda 층 분리',
+      '<code class="tag">index</code>slim root index + category별 indexes/ 카탈로그',
+      '<code class="tag">drain</code>research questions를 topic Open Questions로 흡수',
+      '<code class="tag">quality</code>routine ingest도 synthesis link + supersede check 필수',
+      '<code class="tag">batch</code>06-28 논문_2026: 181 PDFs scan, 127 new papers'
+    ],
+    snap: `<span class="dim">llm-wiki/</span>
+├── papers/        <span class="dim"># 5,439 PDF</span>
+├── sources/       <span class="dim"># 7,536 source notes</span>
+├── wiki/          <span class="dim"># 8,695 pages / 45 categories</span>
+│   ├── overviews/ <span class="dim"># 365 synthesis hubs</span>
+│   └── questions/ <span class="dim"># topic Open Questions로 접히는 중</span>
+├── agenda/        <span class="dim"># 내부 운영 / 프로젝트 매핑</span>
+├── indexes/       <span class="dim"># category별 catalog</span>
+└── logs/          <span class="dim"># validation, orphan drain, ingest ledger</span>
+
+<span class="dim"># 기준이 바뀜:
+# page count보다 linked synthesis coverage</span>`
   }
 ];
 
@@ -4284,7 +4498,7 @@ document.querySelectorAll('.t-rule').forEach(r => {
    LOOPS
    ============================ */
 const loops = [
-  { cad: '매일', name: 'Paper Monitor', flow: 'RSS·DB → paper_monitor.py\n→ logs/monitor-YYYY-MM-DD.md\n→ Downloads/ 신규 PDF', out: '일자별 신규 후보 (13개 누적)', c: 'oklch(0.62 0.14 48)' },
+  { cad: '매일', name: 'Paper Monitor', flow: 'RSS·DB → paper_monitor.py\n→ logs/monitor-YYYY-MM-DD.md\n→ Downloads/ 신규 PDF', out: '일자별 신규 후보 + qmd 재색인 대기', c: 'oklch(0.62 0.14 48)' },
   { cad: '매일', name: 'Ingest', flow: 'PDF → sources/ 요약\n→ wiki/<category>/ 페이지\n→ index.md 갱신', out: '신규 wiki 노트 (10~30 / 일)', c: 'oklch(0.56 0.13 148)' },
   { cad: '매일', name: 'Notion 포스팅', flow: 'wiki 노트 → 프로젝트 식별\n→ 📚 참고 논문 앵커 하위\n→ 페이지 ID 기록', out: '프로젝트 DB별 자식 페이지 (5~20 / 배치)', c: 'oklch(0.48 0.14 320)' },
   { cad: '주간', name: 'Audit·정리', flow: '중복 stem 감지\n→ broken wikilinks 추적\n→ logs/ 블로커 기록', out: '클린업 commits + 블로커 리스트', c: 'oklch(0.66 0.16 85)' },

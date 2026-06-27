@@ -8,7 +8,7 @@ Joonan Lab의 AI Native 연구 시스템 인터랙티브 모음.
 
 | # | Title | Date | Description |
 |---|---|---|---|
-| 01 | [Evolution](evolution/) | 2026-05-08 | 31일간의 LLM-Wiki 진화 케이스 스터디 + 처음 한 시간 가이드 + 실제 워크플로우 5개 |
+| 01 | [Evolution](evolution/) | 2026-06-28 | 82일간의 LLM-Wiki 진화 케이스 스터디 + 처음 한 시간 가이드 + 실제 워크플로우 5개 |
 
 ## What is this?
 
